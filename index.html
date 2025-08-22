@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>이준석</title>
+    <title>이준석 포트폴리오 | 아크나이츠 팬사이트</title>
     <meta
       name="description"
       content="아크나이츠 세계관 팬사이트. 뉴스, 오퍼레이터, 세계관, 미디어 자료를 가로 슬라이드 인터랙션으로 감상하세요."
@@ -20,9 +20,7 @@
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="stylesheet" href="css/style.css" />
-    <!-- ...기존 head 내용... -->
-<link rel="stylesheet" href="css/MagicBento.css" />
-
+    <link rel="stylesheet" href="css/MagicBento.css" />
   </head>
   <body>
     <a href="#index" class="visually-hidden" id="skip">본문으로 건너뛰기</a>
@@ -171,37 +169,29 @@
       </section>
 
       <section
-  id="information"
-  class="full-page-section dark-bg"
-  aria-label="소개"
->
-  <iframe
-    id="infoVideoDay"
-    class="section-bg-video bg-video is-active"
-    src="https://www.youtube.com/embed/FHriMKtYMZA?autoplay=1&mute=1&loop=1&playlist=FHriMKtYMZA"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
-    aria-hidden="true"
-  ></iframe>
+        id="information"
+        class="full-page-section dark-bg"
+        aria-label="소개"
+      >
+        <iframe
+          id="infoVideoDay"
+          class="section-bg-video bg-video is-active"
+          src="https://www.youtube.com/embed/FHriMKtYMZA?autoplay=1&mute=1&loop=1&playlist=FHriMKtYMZA"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          aria-hidden="true"
+        ></iframe>
 
-  <iframe
-    id="infoVideoNight"
-    class="section-bg-video bg-video"
-    src="https://www.youtube.com/embed/KTmxsp4uoJY?autoplay=1&mute=1&loop=1&playlist=KTmxsp4uoJY"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
-    aria-hidden="true"
-  ></iframe>
-
-  <div class="section-content fade-in-up">
-    <h2>테라의 기원</h2>
-    <p>
-      테라 행성은 광석병이라는 치명적인 질병로 고통받고 있습니다. 이 질병은 감염자에게 특별한 능력을 부여하지만, 동시에 그들을 위험으로 몰아넣습니다.
-    </p>
-  </div>
-</section>
+        <iframe
+          id="infoVideoNight"
+          class="section-bg-video bg-video"
+          src="https://www.youtube.com/embed/KTmxsp4uoJY?autoplay=1&mute=1&loop=1&playlist=KTmxsp4uoJY"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          aria-hidden="true"
+        ></iframe>
 
         <div class="section-content fade-in-up">
           <h2>테라의 기원</h2>
@@ -298,9 +288,9 @@
       <section id="world" class="full-page-section dark-bg" aria-label="세계관">
         <div class="section-content fade-in-up">
           <h2>주요 세력 · 개념</h2>
-            <div id="magic-bento-root" aria-live="polite"></div>
-          </div>
-        </section>
+          <div id="magic-bento-root" aria-live="polite"></div>
+        </div>
+      </section>
 
       <section
         id="media"
@@ -386,15 +376,15 @@
 
     <script src="js/script.js" defer></script>
     <script type="module" src="js/aurora.js"></script>
-    <!-- React / ReactDOM (CDN, prod) -->
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-<!-- Babel in-browser (JSX 컴파일) -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<!-- MagicBento (컴포넌트 + 마운트) -->
-<script type="text/babel" data-presets="env,react" src="js/magic-bento.jsx"></script>
-
+    <script
+      type="text/babel"
+      data-presets="env,react"
+      src="js/magic-bento.jsx"
+    ></script>
   </body>
 </html>
