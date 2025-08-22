@@ -77,6 +77,8 @@ a {
   transition: background-color 0.8s ease-in-out;
 }
 .section-content {
+  /* [수정] z-index가 확실히 적용되도록 position 속성 추가 */
+  position: relative;
   z-index: 10;
   max-width: 1080px;
   padding: 2rem;
@@ -84,12 +86,8 @@ a {
 
 /* 섹션별 배경색 정의 */
 .light-bg {
-  background-color: #f0f2f5;
-  color: #333;
-}
-.dark-bg {
-  background-color: #18191a;
-  color: var(--text);
+  background-color: #434343;
+  color: #ededed;
 }
 .light-bg .nav-links a:hover,
 .light-bg .nav-links a[aria-current="page"] {
@@ -222,10 +220,17 @@ a {
   font-size: clamp(2rem, 3vw, 3rem);
   font-weight: 900;
   letter-spacing: 0.02em;
-  color: var(--text);
 }
 .hero-sub {
   margin-top: 0.5rem;
+}
+
+/* [수정] #index 섹션 텍스트 색상 복원 */
+#index .hero-title,
+#index .hero-sub {
+  color: var(--text);
+}
+#index .hero-sub {
   color: var(--muted);
 }
 
@@ -274,7 +279,6 @@ a {
   transform: translateY(0);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   will-change: transform, box-shadow;
-  color: var(--text);
 }
 .news-card::after {
   content: "";
@@ -300,6 +304,10 @@ a {
 }
 .news-title {
   font-weight: 800;
+}
+
+#index .news-card {
+  color: var(--text);
 }
 
 /* carousel */
@@ -530,11 +538,7 @@ a {
   }
 }
 
-/* --- ▼ [수정] Dark Veil 배경과 콘텐츠 레이어 정리 --- */
+/* --- [최종 수정] Dark Veil 배경이 보이도록 #index 섹션의 배경을 투명하게 만듭니다. --- */
 #index.full-page-section {
-  background: transparent; /* 섹션 자체 배경을 투명하게 만듦 */
+  background-color: transparent;
 }
-#index .section-content {
-  position: relative; /* z-index가 작동하도록 position 속성 추가 */
-}
-/* --- ▲ 수정 끝 --- */
