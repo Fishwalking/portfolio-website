@@ -6,12 +6,17 @@
  * ================================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   /* ------------------------------
-   * 공통 상태
+   * 공통 상태 및 요소 캐싱
    * ------------------------------ */
   const container = document.getElementById("container");
   const sections = Array.from(document.querySelectorAll(".full-page-section"));
   const navLinks = document.querySelectorAll(".nav-links a");
   const modalOverlay = document.getElementById("modal-overlay");
+
+  // 성능 향상을 위해 fade-in 요소를 미리 캐싱
+  const fadeInElements = sections.map((section) =>
+    section.querySelectorAll(".fade-in-up")
+  );
 
   let currentIndex = 0;
   let isScrolling = false;
@@ -35,33 +40,60 @@ document.addEventListener("DOMContentLoaded", () => {
     if (active) active.setAttribute("aria-current", "page");
   };
 
+  /* 등장 애니메이션 (캐싱된 요소 사용) */
+  const animateVisible = () => {
+    // 현재 보이는 모든 애니메이션 요소 숨기기
+    document
+      .querySelectorAll(".fade-in-up.visible")
+      .forEach((el) => el.classList.remove("visible"));
+
+    // 현재 섹션의 애니메이션 요소들을 순차적으로 보이게 함
+    const visibleElements = fadeInElements[currentIndex];
+    if (!visibleElements) return;
+
+    visibleElements.forEach((el, i) =>
+      setTimeout(() => el.classList.add("visible"), i * 150)
+    );
+  };
+
   /* 섹션 스크롤 */
   const scrollToSection = (index, pushHistory = true) => {
-    if (!container) return;
+    if (!container || isScrolling) return;
     const max = sections.length - 1;
-    currentIndex = Math.min(Math.max(index, 0), max);
+    const newIndex = Math.min(Math.max(index, 0), max);
+
+    if (newIndex === currentIndex) return; // 같은 섹션으로 이동 시 중단
+    currentIndex = newIndex;
+
     isScrolling = true;
     container.style.transform = `translateX(-${currentIndex * 100}vw)`;
     if (pushHistory)
       history.pushState(null, "", `#${sections[currentIndex].id}`);
+
     setTimeout(() => {
       animateVisible();
-      isScrolling = false;
       updateCurrentNav();
-    }, 800);
+      isScrolling = false;
+    }, 800); // transition 시간과 일치
   };
 
   /* 최초 진입: 해시 처리 */
-  if (location.hash && indexByHash(location.hash) !== -1) {
-    const old = container?.style.transition;
+  const initialHash = location.hash;
+  const initialIndex = indexByHash(initialHash);
+  if (initialHash && initialIndex !== -1) {
+    const oldTransition = container?.style.transition;
     if (container) container.style.transition = "none";
+
     requestAnimationFrame(() => {
-      scrollToSection(indexByHash(location.hash), false);
+      scrollToSection(initialIndex, false);
       if (container)
-        container.style.transition = old || "transform .8s ease-in-out";
+        container.style.transition =
+          oldTransition || "transform .8s ease-in-out";
     });
   } else if (sections[0]) {
     history.replaceState(null, "", `#${sections[0].id}`);
+    animateVisible();
+    updateCurrentNav();
   }
 
   window.addEventListener("hashchange", () => {
@@ -73,19 +105,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalOpen = () =>
     !!modalOverlay && getComputedStyle(modalOverlay).display === "flex";
 
-  /* 휠로 좌우 섹션 이동 */
+  /* 휠로 좌우 섹션 이동 (UX 개선) */
   window.addEventListener(
     "wheel",
     (e) => {
-      if (modalOpen()) return;
-      e.preventDefault();
-      if (isScrolling) return;
-      if (e.deltaY > 0 && currentIndex < sections.length - 1)
-        scrollToSection(currentIndex + 1);
-      else if (e.deltaY < 0 && currentIndex > 0)
-        scrollToSection(currentIndex - 1);
+      if (modalOpen() || isScrolling) return;
+
+      // 스크롤 이동이 수평 이동보다 클 때만 섹션 전환
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        // e.preventDefault(); // 무조건적인 방지 제거
+        if (e.deltaY > 5) {
+          // 임계값 설정으로 미세한 움직임 무시
+          scrollToSection(currentIndex + 1);
+        } else if (e.deltaY < -5) {
+          scrollToSection(currentIndex - 1);
+        }
+      }
     },
-    { passive: false }
+    { passive: true } // preventDefault를 사용하지 않으므로 passive: true로 변경 가능
   );
 
   /* 키보드 이동 */
@@ -123,8 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "touchend",
     (e) => {
-      if (modalOpen()) return;
-      if (touchStartX === null) return;
+      if (modalOpen() || touchStartX === null) return;
       const t = e.changedTouches[0];
       const dx = t.clientX - touchStartX;
       const dy = t.clientY - touchStartY;
@@ -147,20 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   );
 
-  /* 등장 애니메이션 */
-  const animateVisible = () => {
-    const visible = sections[currentIndex];
-    if (!visible) return;
-    const animated = visible.querySelectorAll(".fade-in-up");
-    document
-      .querySelectorAll(".fade-in-up")
-      .forEach((el) => el.classList.remove("visible"));
-    animated.forEach((el, i) =>
-      setTimeout(() => el.classList.add("visible"), i * 150)
-    );
-  };
-  animateVisible();
-
   /* ------------------------------
    * 뉴스 렌더 (데모 데이터)
    * ------------------------------ */
@@ -170,19 +192,19 @@ document.addEventListener("DOMContentLoaded", () => {
         date: "2025-08-14",
         tag: "공지",
         title: "08월 14일 16:00 점검 안내",
-        url: "https://ak.hypergryph.com/",
+        url: "#",
       },
       {
         date: "2025-08-03",
         tag: "공지",
         title: "신규 오퍼레이터 「遥」 이슈 공지",
-        url: "https://ak.hypergryph.com/",
+        url: "#",
       },
       {
         date: "2025-08-02",
         tag: "이벤트",
         title: "창작 공모전 「墟」 개최",
-        url: "https://ak.hypergryph.com/",
+        url: "#",
       },
     ],
     notice: [
@@ -190,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         date: "2025-08-14",
         tag: "공지",
         title: "08월 14일 16:00 점검 안내",
-        url: "https://ak.hypergryph.com/",
+        url: "#",
       },
     ],
     event: [
@@ -198,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         date: "2025-08-02",
         tag: "이벤트",
         title: "창작 공모전 「墟」 개최",
-        url: "https://ak.hypergryph.com/",
+        url: "#",
       },
     ],
     news: [
@@ -206,27 +228,23 @@ document.addEventListener("DOMContentLoaded", () => {
         date: "2025-08-02",
         tag: "뉴스",
         title: "BREAKING NEWS 업데이트",
-        url: "https://ak.hypergryph.com/",
+        url: "#",
       },
     ],
   };
   const renderNews = (key, targetId) => {
     const wrap = document.getElementById(targetId);
     if (!wrap) return;
-    wrap.innerHTML = "";
-    NEWS_DATA[key].forEach((item) => {
-      const a = document.createElement("a");
-      a.href = item.url;
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.className = "news-card";
-      a.setAttribute(
-        "aria-label",
-        `${item.tag} | ${item.date} | ${item.title}`
-      );
-      a.innerHTML = `<div class="news-meta">${item.date} · ${item.tag}</div><div class="news-title">${item.title}</div>`;
-      wrap.appendChild(a);
-    });
+    wrap.innerHTML = NEWS_DATA[key]
+      .map(
+        (item) => `
+        <a href="${item.url}" target="_blank" rel="noopener" class="news-card" aria-label="${item.tag} | ${item.date} | ${item.title}">
+            <div class="news-meta">${item.date} · ${item.tag}</div>
+            <div class="news-title">${item.title}</div>
+        </a>
+    `
+      )
+      .join("");
   };
   renderNews("latest", "news-latest");
   renderNews("notice", "news-notice");
@@ -234,122 +252,61 @@ document.addEventListener("DOMContentLoaded", () => {
   renderNews("news", "news-news");
 
   /* 탭 전환 */
-  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
-  const panels = {
-    "tab-latest": "panel-latest",
-    "tab-notice": "panel-notice",
-    "tab-event": "panel-event",
-    "tab-news": "panel-news",
-  };
-  tabs.forEach((tab) =>
-    tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
-      tab.setAttribute("aria-selected", "true");
-      Object.values(panels).forEach(
-        (id) => (document.getElementById(id).hidden = true)
-      );
-      const active = document.getElementById(panels[tab.id]);
-      if (active) active.hidden = false;
-    })
-  );
+  const tablist = document.querySelector('[role="tablist"]');
+  const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+  const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+
+  tablist.addEventListener("click", (e) => {
+    const clickedTab = e.target.closest('[role="tab"]');
+    if (!clickedTab) return;
+
+    tabs.forEach((tab) => tab.setAttribute("aria-selected", "false"));
+    clickedTab.setAttribute("aria-selected", "true");
+
+    panels.forEach((panel) => {
+      panel.hidden = panel.id !== clickedTab.getAttribute("aria-controls");
+    });
+  });
 
   /* ------------------------------
    * 캐러셀
    * ------------------------------ */
   const track = document.getElementById("opTrack");
-  let opIndex = 0;
-  const getGap = () => {
-    const first = track?.children?.[0];
-    if (!first) return 24;
-    const s = getComputedStyle(first);
-    return parseFloat(s.marginRight || "0");
-  };
-  const updateCarousel = () => {
-    if (!track || !track.children.length) return;
-    const cardW = track.children[0]?.offsetWidth || 320;
-    const gap = getGap();
-    track.style.transform = `translateX(${-(opIndex * (cardW + gap))}px)`;
-
-    // 캐러셀 버튼 상태 업데이트
-    if (opPrev) opPrev.disabled = opIndex === 0;
-    if (opNext) opNext.disabled = opIndex >= track.children.length - 1;
-  };
   const opPrev = document.getElementById("opPrev");
   const opNext = document.getElementById("opNext");
-  opPrev?.addEventListener("click", () => {
-    opIndex = Math.max(0, opIndex - 1);
-    updateCarousel();
-  });
-  opNext?.addEventListener("click", () => {
-    opIndex = Math.min(track.children.length - 1, opIndex + 1);
-    updateCarousel();
-  });
-  window.addEventListener("resize", updateCarousel);
+  let opIndex = 0;
 
-  /* 캐러셀 스와이프/드래그 */
-  (() => {
-    const carousel = document.querySelector("#operator .carousel");
-    if (!carousel) return;
-    let sx = null,
-      sy = null,
-      dragging = false,
-      md = false;
-    const onStart = (e) => {
-      const t = e.touches ? e.touches[0] : e;
-      sx = t.clientX;
-      sy = t.clientY;
-      dragging = true;
+  if (track && opPrev && opNext) {
+    const getGap = () => {
+      const first = track?.children?.[0];
+      if (!first) return 24;
+      return parseFloat(getComputedStyle(first).marginRight || "0");
     };
-    const onMove = (e) => {
-      if (!dragging) return;
-      const t = e.touches ? e.touches[0] : e;
-      const dx = t.clientX - sx;
-      const dy = t.clientY - sy;
-      if (Math.abs(dy) > Math.abs(dx)) return;
-      e.preventDefault();
-    };
-    const onEnd = (e) => {
-      if (!dragging) return;
-      dragging = false;
-      const t = e.changedTouches ? e.changedTouches[0] : e;
-      const dx = t.clientX - sx;
-      if (Math.abs(dx) > 40) {
-        if (dx < 0) opIndex = Math.min(track.children.length - 1, opIndex + 1);
-        else opIndex = Math.max(0, opIndex - 1);
-        updateCarousel();
-      }
-      sx = sy = null;
-    };
-    carousel.addEventListener("touchstart", onStart, { passive: true });
-    carousel.addEventListener("touchmove", onMove, { passive: false });
-    carousel.addEventListener("touchend", onEnd, { passive: true });
-    carousel.addEventListener("mousedown", (e) => {
-      md = true;
-      onStart(e);
-    });
-    carousel.addEventListener("mousemove", (e) => {
-      if (md) onMove(e);
-    });
-    carousel.addEventListener("mouseup", (e) => {
-      if (md) {
-        md = false;
-        onEnd(e);
-      }
-    });
-    carousel.addEventListener("mouseleave", (e) => {
-      if (md) {
-        md = false;
-        onEnd(e);
-      }
-    });
-  })();
 
-  const ro = new ResizeObserver(() => updateCarousel());
-  if (track) {
+    const updateCarousel = () => {
+      if (!track.children.length) return;
+      const cardW = track.children[0]?.offsetWidth || 320;
+      const gap = getGap();
+      track.style.transform = `translateX(${-(opIndex * (cardW + gap))}px)`;
+      opPrev.disabled = opIndex === 0;
+      opNext.disabled = opIndex >= track.children.length - 1;
+    };
+
+    opPrev.addEventListener("click", () => {
+      opIndex = Math.max(0, opIndex - 1);
+      updateCarousel();
+    });
+    opNext.addEventListener("click", () => {
+      opIndex = Math.min(track.children.length - 1, opIndex + 1);
+      updateCarousel();
+    });
+
+    // ResizeObserver를 사용하여 더 안정적인 리사이즈 감지
+    const ro = new ResizeObserver(updateCarousel);
     ro.observe(track);
-    [...track.children].forEach((card) => ro.observe(card));
+
+    updateCarousel(); // 초기화
   }
-  updateCarousel();
 
   /* ------------------------------
    * 모달
@@ -381,15 +338,14 @@ document.addEventListener("DOMContentLoaded", () => {
     lastFocused = document.activeElement;
     modalOverlay.style.display = "flex";
     document.body.style.overflow = "hidden";
-    // 모달 내 포커스 가능한 첫 번째 요소로 포커스 이동
     const firstFocusable = getFocusable()[0];
     if (firstFocusable) firstFocusable.focus();
-    document.addEventListener("keydown", trap);
+    modalOverlay.addEventListener("keydown", trap);
   };
   const closeModal = () => {
     modalOverlay.style.display = "none";
     document.body.style.overflow = "";
-    document.removeEventListener("keydown", trap);
+    modalOverlay.removeEventListener("keydown", trap);
     if (lastFocused) lastFocused.focus();
   };
   openModalBtn?.addEventListener("click", openModal);
@@ -405,54 +361,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const musicToggleBtn = document.getElementById("music-toggle-btn");
   const volumeSlider = document.getElementById("volume-slider");
   const musicControls = musicToggleBtn?.closest(".music-controls");
+
   if (bgm && volumeSlider) {
     bgm.volume = parseFloat(volumeSlider.value);
   }
+
   const syncMusicUI = () => {
     if (!bgm || !musicToggleBtn || !musicControls) return;
     const playing = !bgm.paused;
     musicToggleBtn.textContent = playing ? "⏸️" : "🎵";
-    musicToggleBtn.setAttribute("aria-pressed", playing ? "true" : "false");
+    musicToggleBtn.setAttribute("aria-pressed", String(playing));
     musicControls.classList.toggle("playing", playing);
   };
+
   musicToggleBtn?.addEventListener("click", async () => {
     try {
-      if (bgm.paused) await bgm.play();
-      else bgm.pause();
-    } catch (e) {}
+      if (bgm.paused) {
+        await bgm.play();
+      } else {
+        bgm.pause();
+      }
+    } catch (e) {
+      console.error("Audio play failed:", e);
+    }
     syncMusicUI();
   });
+
   volumeSlider?.addEventListener("input", (e) => {
-    if (bgm) bgm.volume = parseFloat(e.target.value) || 0;
+    if (bgm) bgm.volume = parseFloat(e.target.value);
   });
+
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && bgm && !bgm.paused) {
       bgm.pause();
-      syncMusicUI();
     }
+    syncMusicUI();
   });
-  document.addEventListener("visibilitychange", syncMusicUI);
-  window.addEventListener("pageshow", syncMusicUI);
+
   syncMusicUI();
 
   /* ==============================================================
    * INFORMATION 섹션 배경 비디오 (아침/밤 디졸브)
-   * - 15초 간격으로 교차
    * ============================================================== */
   (() => {
     const infoSection = document.getElementById("information");
     if (!infoSection) return;
 
-    // 비디오 대신 iframe 엘리먼트를 가져옵니다.
     const day = document.getElementById("infoVideoDay");
     const night = document.getElementById("infoVideoNight");
     if (!day || !night) return;
 
-    // 구성
     const INTERVAL_MS = 10000;
-
     const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)");
-    const shouldPause = () => prefersReduced.matches || document.hidden;
     let timer = null;
     let active = day;
     let idle = night;
@@ -460,27 +420,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const crossfade = () => {
       idle.classList.add("is-active");
       active.classList.remove("is-active");
-
       [active, idle] = [idle, active];
     };
 
     const start = () => {
-      if (timer || shouldPause()) return;
+      if (timer || prefersReduced.matches || document.hidden) return;
       timer = setInterval(crossfade, INTERVAL_MS);
     };
-
     const stop = () => {
-      if (!timer) return;
       clearInterval(timer);
       timer = null;
     };
 
     const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) =>
-          e.isIntersecting && !shouldPause() ? start() : stop()
-        );
-      },
+      (entries) =>
+        entries.forEach((e) => (e.isIntersecting ? start() : stop())),
       { threshold: 0.35 }
     );
     io.observe(infoSection);
@@ -489,10 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.hidden ? stop() : start()
     );
     prefersReduced.addEventListener?.("change", () =>
-      shouldPause() ? stop() : start()
+      prefersReduced.matches ? stop() : start()
     );
-
-    // 페이지 로드 시 한 번 실행
-    start();
   })();
 });
