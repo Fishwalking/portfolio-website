@@ -467,19 +467,21 @@ a {
   -webkit-line-clamp: 2;
   line-clamp: 2;
 }
+/* 원본의 테두리 발광 효과를 구현합니다 */
 .card--border-glow::after {
   content: "";
   position: absolute;
   inset: 0;
+  /* padding을 통해 발광 영역을 확장합니다. */
   padding: 6px;
   background: radial-gradient(
     var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    /* 발광 효과를 노란색 계열로 변경 */
-      rgba(255, 255, 102, calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(255, 255, 102, calc(var(--glow-intensity) * 0.8)) 0%,
     rgba(255, 204, 0, calc(var(--glow-intensity) * 0.4)) 30%,
     transparent 60%
   );
   border-radius: inherit;
+  /* mask와 mask-composite를 사용하여 중간 영역을 제거하고 테두리만 남깁니다. */
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: subtract;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
