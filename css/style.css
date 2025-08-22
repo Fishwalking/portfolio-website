@@ -1,5 +1,5 @@
 :root {
-  --bg: #121212;
+  --bg: #2f2f2f;
   --bg-1: #1a1a1a;
   --bg-2: #2c2c2c;
   --text: #f5f5f5;
@@ -220,25 +220,6 @@ a {
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* WORLD: 3x2 그리드 (>=768px) */
-#world .card-grid {
-  display: grid;
-  gap: 0.5em;
-  padding: 0.75em;
-  max-width: 1100px;
-  margin: 1.5rem auto 0;
-}
-@media (min-width: 768px) {
-  #world .card-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-}
-@media (max-width: 767px) {
-  #world .card-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-
 /* hero */
 .hero-title {
   font-size: clamp(2rem, 3vw, 3rem);
@@ -389,113 +370,26 @@ a {
   z-index: 6;
 }
 
-/* cards */
-.card-grid {
+/* lore-grid for #more section */
+.lore-grid {
   display: grid;
-  gap: 0.5em;
-  padding: 0.75em;
-  max-width: 54em;
-  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
-  margin: 1.5rem auto 0;
+  gap: 1rem;
+  max-width: 800px;
+  margin: 2rem auto 0;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
-.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  aspect-ratio: 4/3;
-  min-height: 200px;
-  width: 100%;
-  padding: 1.25em;
-  border-radius: 20px;
+.lore-card {
+  background: var(--bg-1);
   border: 1px solid var(--border-color);
-  background: var(--background-dark);
-  font-weight: 300;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  --glow-x: 50%;
-  --glow-y: 50%;
-  --glow-intensity: 0;
-  --glow-radius: 200px;
-  color: var(--white);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-.card__header,
-.card__content {
-  display: flex;
-  position: relative;
-  color: var(--white);
-}
-.card__header {
-  gap: 0.75em;
-  justify-content: space-between;
-}
-.card__content {
-  flex-direction: column;
-}
-.card__label {
-  font-size: 16px;
-  color: #ffe27a;
-}
-.card__title {
-  font-weight: 400;
-  font-size: 16px;
-  margin: 0 0 0.25em;
-  color: #fff;
-}
-.card__description {
-  font-size: 12px;
-  line-height: 1.2;
-  color: #eaeaea;
-  opacity: 0.9;
-}
-.card--text-autohide .card__title,
-.card--text-autohide .card__description {
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.card--text-autohide .card__title {
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-}
-.card--text-autohide .card__description {
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-/* 원본의 테두리 발광 효과를 구현합니다 */
-.card--border-glow::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* padding을 통해 발광 영역을 확장합니다. */
-  padding: 6px;
-  background: radial-gradient(
-    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(255, 255, 102, calc(var(--glow-intensity) * 0.8)) 0%,
-    rgba(255, 204, 0, calc(var(--glow-intensity) * 0.4)) 30%,
-    transparent 60%
-  );
-  border-radius: inherit;
-  /* mask와 mask-composite를 사용하여 중간 영역을 제거하고 테두리만 남깁니다. */
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: subtract;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 1;
-  opacity: 0;
-}
-.card--border-glow:hover::after {
-  opacity: 1;
-}
-.card--border-glow:hover {
-  box-shadow: 0 4px 20px rgba(169, 172, 31, 0.4), 0 0 30px var(--yellow-glow);
+.lore-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  color: var(--accent);
 }
 
 /* modal & buttons */
@@ -536,6 +430,9 @@ a {
   border: none;
   color: var(--text);
   cursor: pointer;
+}
+.close-btn::before {
+  content: "×"; /* Using a character for the close icon */
 }
 .video-wrapper {
   position: relative;
