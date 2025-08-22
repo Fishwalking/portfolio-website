@@ -1,65 +1,119 @@
-/* css/dark-veil.css */
-#dark-veil {
-  position: fixed;
+/* ====== Dark Veil (CSS-only) ====== */
+/* 히어로 루트가 .hero 라고 가정. 실제 클래스명에 맞게 조정 */
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+/* 오버레이는 섹션 안쪽 전체에 절대배치 */
+.rb-veil {
+  position: absolute;
   inset: 0;
-  pointer-events: none; /* 클릭 간섭 방지 */
-  z-index: 9999; /* 필요 시 조정 */
-  --vx: 50%;
-  --vy: 50%;
-  --r1: 140px; /* 투명 중심부 반경 */
-  --r2: 280px; /* 가장자리까지의 페이드 반경 */
-  --veil: rgba(0, 0, 0, 0.66); /* 전체 어둡기 */
-  background: var(--veil);
-  transition: opacity 0.25s ease;
+  z-index: 0; /* 텍스트/버튼보다 아래 */
+  pointer-events: none; /* 인터랙션 간섭 방지 */
+  overflow: hidden;
+  /* 은은한 어둠과 비네트 */
+  background: radial-gradient(
+      150% 100% at 50% 0%,
+      rgba(147, 51, 234, 0.16),
+      transparent 45%
+    ),
+    radial-gradient(
+      120% 90% at 50% 100%,
+      rgba(99, 102, 241, 0.12),
+      transparent 55%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.35),
+      rgba(0, 0, 0, 0.88) 60%,
+      rgba(0, 0, 0, 0.92)
+    );
+  filter: saturate(115%);
 }
 
-/* 마스크 지원 시: 커서 주변만 투명하게 뚫림 */
-@supports (
-  (mask-image: radial-gradient(circle at 50% 50%, #000 0, transparent 100%)) or
-    (
-      -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0, transparent
-            100%)
-    )
-) {
-  #dark-veil {
-    mask-image: radial-gradient(
-      circle var(--r2) at var(--vx) var(--vy),
-      transparent calc(var(--r1) - 1px),
-      black var(--r1)
-    );
-    -webkit-mask-image: radial-gradient(
-      circle var(--r2) at var(--vx) var(--vy),
-      transparent calc(var(--r1) - 1px),
-      black var(--r1)
-    );
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
+/* 흐르는 보라빛 덩어리 3개: 반투명 + 블러 + 혼합 */
+.rb-veil .blob {
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.7;
+  mix-blend-mode: screen; /* 밝은 색만 더하기 → 보라 빛이 은은하게 */
+  will-change: transform;
+}
+
+/* 색상/움직임은 개별로 다르게 */
+.rb-veil .b1 {
+  left: -10vmax;
+  top: -12vmax;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(168, 85, 247, 0.85),
+    rgba(76, 29, 149, 0.2) 60%,
+    transparent 65%
+  );
+  animation: veilFloat1 18s ease-in-out infinite alternate;
+}
+.rb-veil .b2 {
+  right: -8vmax;
+  top: -6vmax;
+  background: radial-gradient(
+    circle at 60% 40%,
+    rgba(79, 70, 229, 0.75),
+    rgba(30, 27, 75, 0.18) 60%,
+    transparent 65%
+  );
+  animation: veilFloat2 24s ease-in-out infinite alternate;
+}
+.rb-veil .b3 {
+  left: 35vw;
+  top: 35vh;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(236, 72, 153, 0.4),
+    transparent 65%
+  );
+  animation: veilFloat3 20s ease-in-out infinite alternate;
+  opacity: 0.5;
+}
+
+/* 키프레임: 천처럼 느리게 흐르도록 */
+@keyframes veilFloat1 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(20%, 8%, 0) rotate(10deg) scale(1.05);
+  }
+}
+@keyframes veilFloat2 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(-14%, 12%, 0) rotate(-8deg) scale(1);
+  }
+}
+@keyframes veilFloat3 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-10%, -10%, 0) rotate(6deg) scale(1.08);
   }
 }
 
-/* 마스크 미지원 브라우저용 폴백: 커서 주변만 살짝 밝게 */
-@supports not (
-  mask-image: radial-gradient(circle at 50% 50%, #000 0, transparent 100%)
-) {
-  #dark-veil {
-    background: radial-gradient(
-      circle var(--r2) at var(--vx) var(--vy),
-      rgba(255, 255, 255, 0.1),
-      var(--veil) 45%
-    );
+/* 모션 최소화 설정 존중 */
+@media (prefers-reduced-motion: reduce) {
+  .rb-veil .blob {
+    animation: none;
   }
 }
 
-/* 시작/토글용 */
-#dark-veil.is-hidden {
-  opacity: 0;
-}
-
-/* 모바일 최적화(반경 축소) */
-@media (max-width: 480px) {
-  #dark-veil {
-    --r1: 90px;
-    --r2: 180px;
-    --veil: rgba(0, 0, 0, 0.58);
-  }
+/* 히어로 콘텐츠를 베일 위로 올리기 (예: 타이틀/버튼 래퍼) */
+.hero > *:not(.rb-veil) {
+  position: relative;
+  z-index: 1;
 }

@@ -86,7 +86,7 @@ a {
 
 /* 섹션별 배경색 정의 */
 .light-bg {
-  background-color: #434343;
+  background-color: #1a1a1a;
   color: #ededed;
 }
 .light-bg .nav-links a:hover,
