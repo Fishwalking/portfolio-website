@@ -1,102 +1,108 @@
-:root {
-  --white: #fff;
-  --border-color: #392e4e;
-  --background-dark: #060010;
+/* ===== MagicBento: site-themed (dark + gold) ===== */
+#magic-bento-root {
+  /* 사이트 공통 변수와 일치 */
+  --bg: #121212;
+  --bg-1: #1a1a1a;
+  --bg-2: #0f0f0f;
+  --text: #f5f5f5;
+  --muted: #bdbdbd;
+  --accent-raw: 255, 204, 0; /* #ffcc00 */
+  --accent: rgb(var(--accent-raw));
+  --glow-soft: rgba(255, 204, 0, 0.35);
+  --glow-weak: rgba(255, 204, 0, 0.2);
+
+  color-scheme: dark;
 }
 
-/* ===== Grid (3×2 기본, 반응형 2/1열) ===== */
 #magic-bento-root .card-grid {
-  --gap: 12px;
-  --radius: 20px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: 220px;
-  gap: var(--gap);
+  gap: 0.75rem;
+  padding: 0.75rem;
   max-width: 1100px;
   margin: 1.25rem auto 0;
-  padding: 0.75em;
-}
-@media (max-width: 1024px) {
-  #magic-bento-root .card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 640px) {
-  #magic-bento-root .card-grid {
-    grid-template-columns: 1fr;
-    grid-auto-rows: 200px;
-  }
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
 }
 
-#magic-bento-root .bento-section {
-  position: relative;
-  user-select: none;
-}
-
-/* ===== Card base ===== */
+/* 카드 본체 */
 #magic-bento-root .card {
   position: relative;
-  overflow: hidden;
-  border-radius: var(--radius);
-  background: var(--background-dark);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
-  color: var(--white);
-  transform-style: preserve-3d;
-  transition: box-shadow 0.25s ease, border-color 0.25s ease,
-    transform 0.18s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1.25em;
+
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 200px;
+  padding: 1.25rem;
+  border-radius: 20px;
+
+  /* 사이트 톤에 맞춘 다크 그라데이션 */
+  background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  border: 1px solid rgba(var(--accent-raw), 0.1);
+
+  color: var(--text);
+  font-weight: 300;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease;
+
+  /* glow runtime vars */
   --glow-x: 50%;
   --glow-y: 50%;
   --glow-intensity: 0;
-  --glow-radius: 200px;
-  --glow-color-rgb: 132, 0, 255; /* JS에서 덮어씀 */
-}
-#magic-bento-root .card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+  --glow-radius: 220px;
 }
 
+#magic-bento-root .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 28px var(--glow-weak);
+  border-color: rgba(var(--accent-raw), 0.18);
+}
+
+/* 텍스트 블록 */
 #magic-bento-root .card__header,
 #magic-bento-root .card__content {
-  display: flex;
   position: relative;
+  display: flex;
+  color: var(--text);
 }
+
 #magic-bento-root .card__header {
-  gap: 0.75em;
   justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
 }
+
 #magic-bento-root .card__content {
   flex-direction: column;
 }
 
 #magic-bento-root .card__label {
-  display: inline-block;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.95);
-  padding: 0.25rem 0.5rem;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(2px);
+  color: #2b2300; /* 어두운 배경 위 노란 라벨 대비 */
+  background: rgba(var(--accent-raw), 0.18);
+  border: 1px solid rgba(var(--accent-raw), 0.3);
 }
 
 #magic-bento-root .card__title {
+  margin: 0.35rem 0 0.25rem;
+  font-size: clamp(1rem, 0.8rem + 0.6vw, 1.25rem);
   font-weight: 800;
-  font-size: 16px;
-  margin: 0 0 0.25em;
+  letter-spacing: 0.01em;
+  color: #fff;
 }
+
 #magic-bento-root .card__description {
-  font-size: 12px;
-  line-height: 1.2;
+  font-size: 0.9rem;
+  line-height: 1.3;
   color: #eaeaea;
   opacity: 0.9;
 }
 
+/* 자동 줄임 */
 #magic-bento-root .card--text-autohide .card__title,
 #magic-bento-root .card--text-autohide .card__description {
   display: -webkit-box;
@@ -106,119 +112,124 @@
 }
 #magic-bento-root .card--text-autohide .card__title {
   -webkit-line-clamp: 1;
-  line-clamp: 1;
 }
 #magic-bento-root .card--text-autohide .card__description {
   -webkit-line-clamp: 2;
-  line-clamp: 2;
 }
 
-/* ===== Dots/Lines texture (reactbits 느낌) ===== */
-#magic-bento-root .card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.22;
-  mix-blend-mode: soft-light;
-  background: radial-gradient(currentColor 1.2px, transparent 1.5px) 0 0 / 18px
-    18px;
-  color: rgba(255, 255, 255, 0.6);
-  transform: translateZ(1px);
-}
-#magic-bento-root .card .lines {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.1;
-  mix-blend-mode: overlay;
-  background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.18) 1px,
-        transparent 1px
-      )
-      0 0/ 100% 26px,
-    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px) 0
-      0/ 26px 100%;
-  transform: translateZ(2px);
-  animation: lines-pan 14s linear infinite;
-}
-@keyframes lines-pan {
-  0% {
-    background-position: 0 0, 0 0;
-  }
-  100% {
-    background-position: 0 26px, 26px 0;
-  }
-}
-
-/* ===== Border glow (spot-follow) ===== */
+/* 보더 글로우 */
 #magic-bento-root .card--border-glow::after {
   content: "";
   position: absolute;
   inset: 0;
   padding: 6px;
   border-radius: inherit;
-  z-index: 1;
   pointer-events: none;
+  transition: opacity 0.28s ease;
+  opacity: 0;
+
   background: radial-gradient(
     var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(var(--glow-color-rgb), calc(var(--glow-intensity) * 0.9)) 0%,
-    rgba(var(--glow-color-rgb), calc(var(--glow-intensity) * 0.45)) 35%,
+    rgba(var(--accent-raw), calc(var(--glow-intensity) * 0.85)) 0%,
+    rgba(var(--accent-raw), calc(var(--glow-intensity) * 0.4)) 30%,
     transparent 60%
   );
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
+
+  /* 바깥쪽만 남도록 */
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  opacity: clamp(0, var(--glow-intensity), 1);
-  transition: opacity 0.2s ease;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  z-index: 1;
+}
+#magic-bento-root .card--border-glow:hover::after {
+  opacity: 1;
 }
 
-/* ===== Particle hover (stars) ===== */
-#magic-bento-root .particle {
-  will-change: transform, opacity;
-}
-#magic-bento-root .particle-container:hover {
-  box-shadow: 0 4px 20px rgba(46, 24, 78, 0.25), 0 0 30px rgba(132, 0, 255, 0.2);
-}
+/* “별/입자”는 컴포넌트가 glowColor를 사용 — 테마와 자동 일치 */
 
-/* ===== Ripple click ===== */
-#magic-bento-root .ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(var(--glow-color-rgb), 0.4) 0%,
-    rgba(var(--glow-color-rgb), 0.2) 30%,
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 1000;
-}
-
-/* ===== Global spotlight ===== */
-.global-spotlight {
-  position: fixed;
-  width: 800px;
-  height: 800px;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
+/* 글로벌 스포트라이트(배경 광) */
+#magic-bento-root .global-spotlight {
   mix-blend-mode: screen;
   will-change: transform, opacity;
+  pointer-events: none;
+  z-index: 200 !important;
+}
+
+/* 반응형: 3열(데스크탑) / 2열(태블릿) / 1열(모바일) */
+@media (max-width: 599px) {
+  #magic-bento-root .card-grid {
+    grid-template-columns: 1fr;
+    width: 90%;
+    padding: 0.5rem;
+  }
+  #magic-bento-root .card {
+    min-height: 180px;
+  }
+}
+@media (min-width: 600px) and (max-width: 1023px) {
+  #magic-bento-root .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  #magic-bento-root .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* 필요하면 특수 배치 넣기 (예: 가운데 카드 강조) */
+  /* #magic-bento-root .card:nth-child(2) { grid-column: span 2; } */
+}
+/* === Better readability for card texts (stronger contrast) === */
+/* 래퍼가 #magic-bento-root 인 경우 + world 섹션 카드 모두 커버 */
+#magic-bento-root .card,
+#world .card {
+  /* 카드 중앙을 살짝 더 어둡게 만들어 텍스트 대비 확보 */
   background: radial-gradient(
-    circle,
-    rgba(var(--glow-color-rgb), 0.15) 0%,
-    rgba(var(--glow-color-rgb), 0.08) 15%,
-    rgba(var(--glow-color-rgb), 0.04) 25%,
-    rgba(var(--glow-color-rgb), 0.02) 40%,
-    rgba(var(--glow-color-rgb), 0.01) 65%,
-    transparent 70%
-  );
-  z-index: 200;
-  opacity: 0;
+      120% 120% at 50% 40%,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.18) 55%,
+      rgba(0, 0, 0, 0.32) 100%
+    ),
+    linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+}
+
+/* 제목 컬러 강화 + 텍스트 그림자(미세)로 어떤 배경에서도 또렷하게 */
+#magic-bento-root .card__title,
+#world .card__title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.55), 0 0 1px rgba(0, 0, 0, 0.65);
+  letter-spacing: 0.01em;
+  position: relative;
+  z-index: 2; /* 글로우/오버레이 위 */
+}
+
+/* 본문도 살짝 더 밝게 + 얇은 그림자 */
+#magic-bento-root .card__description,
+#world .card__description {
+  color: #f0f0f0 !important;
+  opacity: 0.95;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  position: relative;
+  z-index: 2;
+}
+
+/* 라벨은 노란색 유지하되 대비 개선(어두운 텍스트 X) */
+#magic-bento-root .card__label,
+#world .card__label {
+  color: #1b1600; /* 더 진한 글자색으로 가독성 ↑ */
+  background: rgba(255, 204, 0, 0.22);
+  border: 1px solid rgba(255, 204, 0, 0.34);
+}
+
+/* 글로우/오버레이의 레이어 순서 정리(텍스트보다 아래) */
+#magic-bento-root .card--border-glow::after,
+#world .card--border-glow::after {
+  z-index: 1;
+}
+#magic-bento-root .card__header,
+#magic-bento-root .card__content,
+#world .card__header,
+#world .card__content {
+  position: relative;
+  z-index: 2;
 }

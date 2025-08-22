@@ -20,6 +20,9 @@
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="stylesheet" href="css/style.css" />
+    <!-- ...기존 head 내용... -->
+<link rel="stylesheet" href="css/MagicBento.css" />
+
   </head>
   <body>
     <a href="#index" class="visually-hidden" id="skip">본문으로 건너뛰기</a>
@@ -295,66 +298,9 @@
       <section id="world" class="full-page-section dark-bg" aria-label="세계관">
         <div class="section-content fade-in-up">
           <h2>주요 세력 · 개념</h2>
-          <div class="bento-section">
-            <div class="card-grid">
-              <div class="card card--border-glow card--text-autohide">
-                <div class="card__header">
-                  <span class="card__label">Lore</span><span>Originium</span>
-                </div>
-                <div class="card__content">
-                  <h3 class="card__title">원석 (Originium)</h3>
-                  <p class="card__description">테라 곳곳의 미지의 결정체.</p>
-                </div>
-              </div>
-              <div class="card card--border-glow card--text-autohide">
-                <div class="card__header">
-                  <span class="card__label">Lore</span><span>Arts</span>
-                </div>
-                <div class="card__content">
-                  <h3 class="card__title">원석기예 (Originium Arts)</h3>
-                  <p class="card__description">원석을 매개로 발현되는 현상.</p>
-                </div>
-              </div>
-              <div class="card card--border-glow card--text-autohide">
-                <div class="card__header">
-                  <span class="card__label">Lore</span><span>Infected</span>
-                </div>
-                <div class="card__content">
-                  <h3 class="card__title">감염자 (Infected)</h3>
-                  <p class="card__description">사회적 배제와 생존의 모순.</p>
-                </div>
-              </div>
-              <div class="card card--border-glow card--text-autohide">
-                <div class="card__header">
-                  <span class="card__label">Lore</span><span>Nomadic City</span>
-                </div>
-                <div class="card__content">
-                  <h3 class="card__title">이동 도시국가</h3>
-                  <p class="card__description">재난을 피해 이동하는 도시.</p>
-                </div>
-              </div>
-              <div class="card card--border-glow card--text-autohide">
-                <div class="card__header">
-                  <span class="card__label">Faction</span><span>Rhodes</span>
-                </div>
-                <div class="card__content">
-                  <h3 class="card__title">로도스 아일랜드</h3>
-                  <p class="card__description">의료/용병 활동 집단.</p>
-                </div>
-              </div>
-              <div class="card card--border-glow card--text-autohide">
-                <div class="card__header">
-                  <span class="card__label">Faction</span><span>Reunion</span>
-                </div>
-                <div class="card__content">
-                  <h3 class="card__title">리유니온</h3>
-                  <p class="card__description">감염자 중심 무장 조직.</p>
-                </div>
-              </div>
-            </div>
+            <div id="magic-bento-root" aria-live="polite"></div>
           </div>
-        </div>
-      </section>
+        </section>
 
       <section
         id="media"
@@ -440,5 +386,15 @@
 
     <script src="js/script.js" defer></script>
     <script type="module" src="js/aurora.js"></script>
+    <!-- React / ReactDOM (CDN, prod) -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<!-- Babel in-browser (JSX 컴파일) -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<!-- MagicBento (컴포넌트 + 마운트) -->
+<script type="text/babel" data-presets="env,react" src="js/magic-bento.jsx"></script>
+
   </body>
 </html>
