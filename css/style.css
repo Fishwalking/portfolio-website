@@ -474,8 +474,9 @@ a {
   padding: 6px;
   background: radial-gradient(
     var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.8)) 0%,
-    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.4)) 30%,
+    /* 발광 효과를 노란색 계열로 변경 */
+      rgba(255, 255, 102, calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(255, 204, 0, calc(var(--glow-intensity) * 0.4)) 30%,
     transparent 60%
   );
   border-radius: inherit;
