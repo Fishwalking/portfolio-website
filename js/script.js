@@ -2,7 +2,6 @@
  * js/script.js  (전체)
  * - 가로 스냅 섹션 내비게이션
  * - 뉴스/탭/캐러셀/모달/음악/카드 글로우
- * - INFORMATION 섹션 배경 비디오(아침/밤) 15초 디졸브 + 시작 시점 시크
  * ================================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   /* ------------------------------
@@ -13,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll(".nav-links a");
   const modalOverlay = document.getElementById("modal-overlay");
 
-  // 성능 향상을 위해 fade-in 요소를 미리 캐싱
   const fadeInElements = sections.map((section) =>
     section.querySelectorAll(".fade-in-up")
   );
@@ -23,15 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let touchStartX = null;
   let touchStartY = null;
 
-  /* 컨테이너 폭 = 섹션 수 × 100vw */
   if (container && sections.length) {
     container.style.width = `${sections.length * 100}vw`;
   }
 
-  /* 해시 기반 인덱스 */
   const indexByHash = (hash) => sections.findIndex((s) => `#${s.id}` === hash);
 
-  /* 현재 내비활성 표시 */
   const updateCurrentNav = () => {
     navLinks.forEach((a) => a.removeAttribute("aria-current"));
     const active = document.querySelector(
@@ -40,14 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (active) active.setAttribute("aria-current", "page");
   };
 
-  /* 등장 애니메이션 (캐싱된 요소 사용) */
   const animateVisible = () => {
-    // 현재 보이는 모든 애니메이션 요소 숨기기
     document
       .querySelectorAll(".fade-in-up.visible")
       .forEach((el) => el.classList.remove("visible"));
 
-    // 현재 섹션의 애니메이션 요소들을 순차적으로 보이게 함
     const visibleElements = fadeInElements[currentIndex];
     if (!visibleElements) return;
 
@@ -56,13 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   };
 
-  /* 섹션 스크롤 */
   const scrollToSection = (index, pushHistory = true) => {
     if (!container || isScrolling) return;
     const max = sections.length - 1;
     const newIndex = Math.min(Math.max(index, 0), max);
 
-    if (newIndex === currentIndex) return; // 같은 섹션으로 이동 시 중단
+    if (newIndex === currentIndex) return;
     currentIndex = newIndex;
 
     isScrolling = true;
@@ -74,10 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
       animateVisible();
       updateCurrentNav();
       isScrolling = false;
-    }, 800); // transition 시간과 일치
+    }, 800);
   };
 
-  /* 최초 진입: 해시 처리 */
   const initialHash = location.hash;
   const initialIndex = indexByHash(initialHash);
   if (initialHash && initialIndex !== -1) {
@@ -101,31 +91,25 @@ document.addEventListener("DOMContentLoaded", () => {
     if (idx !== -1 && idx !== currentIndex) scrollToSection(idx, false);
   });
 
-  /* 모달 열림 여부 */
   const modalOpen = () =>
     !!modalOverlay && getComputedStyle(modalOverlay).display === "flex";
 
-  /* 휠로 좌우 섹션 이동 (UX 개선) */
   window.addEventListener(
     "wheel",
     (e) => {
       if (modalOpen() || isScrolling) return;
 
-      // 스크롤 이동이 수평 이동보다 클 때만 섹션 전환
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        // e.preventDefault(); // 무조건적인 방지 제거
         if (e.deltaY > 5) {
-          // 임계값 설정으로 미세한 움직임 무시
           scrollToSection(currentIndex + 1);
         } else if (e.deltaY < -5) {
           scrollToSection(currentIndex - 1);
         }
       }
     },
-    { passive: true } // preventDefault를 사용하지 않으므로 passive: true로 변경 가능
+    { passive: true }
   );
 
-  /* 키보드 이동 */
   window.addEventListener("keydown", (e) => {
     if (modalOpen()) return;
     if (["ArrowRight", "PageDown"].includes(e.key)) {
@@ -146,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* 터치 스와이프 */
   window.addEventListener(
     "touchstart",
     (e) => {
@@ -173,7 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
     { passive: true }
   );
 
-  /* 네비 링크 클릭 이동 */
   navLinks.forEach((link) =>
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -251,154 +233,190 @@ document.addEventListener("DOMContentLoaded", () => {
   renderNews("event", "news-event");
   renderNews("news", "news-news");
 
-  /* 탭 전환 */
   const tablist = document.querySelector('[role="tablist"]');
-  const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
-  const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+  if (tablist) {
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
 
-  tablist.addEventListener("click", (e) => {
-    const clickedTab = e.target.closest('[role="tab"]');
-    if (!clickedTab) return;
+    tablist.addEventListener("click", (e) => {
+      const clickedTab = e.target.closest('[role="tab"]');
+      if (!clickedTab) return;
 
-    tabs.forEach((tab) => tab.setAttribute("aria-selected", "false"));
-    clickedTab.setAttribute("aria-selected", "true");
+      tabs.forEach((tab) => tab.setAttribute("aria-selected", "false"));
+      clickedTab.setAttribute("aria-selected", "true");
 
-    panels.forEach((panel) => {
-      panel.hidden = panel.id !== clickedTab.getAttribute("aria-controls");
+      panels.forEach((panel) => {
+        panel.hidden = panel.id !== clickedTab.getAttribute("aria-controls");
+      });
     });
-  });
+  }
 
   /* ------------------------------
-   * 캐러셀
+   * 캐러셀 (무한 루프 적용)
    * ------------------------------ */
   const track = document.getElementById("opTrack");
   const opPrev = document.getElementById("opPrev");
   const opNext = document.getElementById("opNext");
-  let opIndex = 0;
 
   if (track && opPrev && opNext) {
-    const getGap = () => {
-      const first = track?.children?.[0];
-      if (!first) return 24;
-      return parseFloat(getComputedStyle(first).marginRight || "0");
+    let opIndex = 0;
+    const cards = Array.from(track.children);
+    const cardCount = cards.length;
+    let isMoving = false;
+
+    // 1. 무한 루프를 위해 앞뒤로 카드 복제
+    const cloneFirst = cards[0].cloneNode(true);
+    const cloneLast = cards[cardCount - 1].cloneNode(true);
+    track.appendChild(cloneFirst);
+    track.insertBefore(cloneLast, cards[0]);
+
+    const getCardWidth = () => {
+      const card = cards[0];
+      const style = getComputedStyle(card);
+      return (
+        card.offsetWidth +
+        parseFloat(style.marginLeft) +
+        parseFloat(style.marginRight)
+      );
     };
 
-    const updateCarousel = () => {
-      if (!track.children.length) return;
-      const cardW = track.children[0]?.offsetWidth || 320;
-      const gap = getGap();
-      track.style.transform = `translateX(${-(opIndex * (cardW + gap))}px)`;
-      opPrev.disabled = opIndex === 0;
-      opNext.disabled = opIndex >= track.children.length - 1;
+    const updatePosition = (withTransition = true) => {
+      isMoving = true;
+      track.style.transition = withTransition ? "transform 0.6s ease" : "none";
+      const cardWidth = getCardWidth();
+      track.style.transform = `translateX(-${(opIndex + 1) * cardWidth}px)`;
+
+      if (withTransition) {
+        setTimeout(() => {
+          isMoving = false;
+        }, 600);
+      } else {
+        isMoving = false;
+      }
     };
+
+    // 초기 위치 설정
+    updatePosition(false);
+
+    opNext.addEventListener("click", () => {
+      if (isMoving) return;
+      opIndex++;
+      updatePosition();
+
+      if (opIndex === cardCount) {
+        setTimeout(() => {
+          opIndex = 0;
+          updatePosition(false);
+        }, 600);
+      }
+    });
 
     opPrev.addEventListener("click", () => {
-      opIndex = Math.max(0, opIndex - 1);
-      updateCarousel();
-    });
-    opNext.addEventListener("click", () => {
-      opIndex = Math.min(track.children.length - 1, opIndex + 1);
-      updateCarousel();
+      if (isMoving) return;
+      opIndex--;
+      updatePosition();
+
+      if (opIndex < 0) {
+        setTimeout(() => {
+          opIndex = cardCount - 1;
+          updatePosition(false);
+        }, 600);
+      }
     });
 
-    // ResizeObserver를 사용하여 더 안정적인 리사이즈 감지
-    const ro = new ResizeObserver(updateCarousel);
-    ro.observe(track);
-
-    updateCarousel(); // 초기화
+    window.addEventListener("resize", () => updatePosition(false));
   }
 
   /* ------------------------------
    * 모달
    * ------------------------------ */
   const openModalBtn = document.getElementById("open-modal");
-  const closeBtn = modalOverlay?.querySelector(".close-btn");
-  let lastFocused = null;
-  const getFocusable = () =>
-    modalOverlay.querySelectorAll(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
-    );
-  const trap = (e) => {
-    if (e.key === "Escape") return closeModal();
-    if (e.key === "Tab") {
-      const f = Array.from(getFocusable());
-      if (!f.length) return;
-      const first = f[0],
-        last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
+  if (openModalBtn) {
+    const closeBtn = modalOverlay?.querySelector(".close-btn");
+    let lastFocused = null;
+    const getFocusable = () =>
+      modalOverlay.querySelectorAll(
+        'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
+      );
+    const trap = (e) => {
+      if (e.key === "Escape") return closeModal();
+      if (e.key === "Tab") {
+        const f = Array.from(getFocusable());
+        if (!f.length) return;
+        const first = f[0],
+          last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
-    }
-  };
-  const openModal = () => {
-    lastFocused = document.activeElement;
-    modalOverlay.style.display = "flex";
-    document.body.style.overflow = "hidden";
-    const firstFocusable = getFocusable()[0];
-    if (firstFocusable) firstFocusable.focus();
-    modalOverlay.addEventListener("keydown", trap);
-  };
-  const closeModal = () => {
-    modalOverlay.style.display = "none";
-    document.body.style.overflow = "";
-    modalOverlay.removeEventListener("keydown", trap);
-    if (lastFocused) lastFocused.focus();
-  };
-  openModalBtn?.addEventListener("click", openModal);
-  closeBtn?.addEventListener("click", closeModal);
-  modalOverlay?.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeModal();
-  });
+    };
+    const openModal = () => {
+      lastFocused = document.activeElement;
+      modalOverlay.style.display = "flex";
+      document.body.style.overflow = "hidden";
+      const firstFocusable = getFocusable()[0];
+      if (firstFocusable) firstFocusable.focus();
+      modalOverlay.addEventListener("keydown", trap);
+    };
+    const closeModal = () => {
+      modalOverlay.style.display = "none";
+      document.body.style.overflow = "";
+      modalOverlay.removeEventListener("keydown", trap);
+      if (lastFocused) lastFocused.focus();
+    };
+    openModalBtn.addEventListener("click", openModal);
+    closeBtn?.addEventListener("click", closeModal);
+    modalOverlay?.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+  }
 
   /* ------------------------------
    * 오디오 제어
    * ------------------------------ */
   const bgm = document.getElementById("bgm");
   const musicToggleBtn = document.getElementById("music-toggle-btn");
-  const volumeSlider = document.getElementById("volume-slider");
-  const musicControls = musicToggleBtn?.closest(".music-controls");
+  if (bgm && musicToggleBtn) {
+    const volumeSlider = document.getElementById("volume-slider");
+    const musicControls = musicToggleBtn.closest(".music-controls");
 
-  if (bgm && volumeSlider) {
-    bgm.volume = parseFloat(volumeSlider.value);
-  }
+    if (volumeSlider) {
+      bgm.volume = parseFloat(volumeSlider.value);
+    }
 
-  const syncMusicUI = () => {
-    if (!bgm || !musicToggleBtn || !musicControls) return;
-    const playing = !bgm.paused;
-    musicToggleBtn.textContent = playing ? "⏸️" : "🎵";
-    musicToggleBtn.setAttribute("aria-pressed", String(playing));
-    musicControls.classList.toggle("playing", playing);
-  };
+    const syncMusicUI = () => {
+      if (!musicControls) return;
+      const playing = !bgm.paused;
+      musicToggleBtn.textContent = playing ? "⏸️" : "🎵";
+      musicToggleBtn.setAttribute("aria-pressed", String(playing));
+      musicControls.classList.toggle("playing", playing);
+    };
 
-  musicToggleBtn?.addEventListener("click", async () => {
-    try {
-      if (bgm.paused) {
-        await bgm.play();
-      } else {
-        bgm.pause();
+    musicToggleBtn.addEventListener("click", async () => {
+      try {
+        if (bgm.paused) await bgm.play();
+        else bgm.pause();
+      } catch (e) {
+        console.error("Audio play failed:", e);
       }
-    } catch (e) {
-      console.error("Audio play failed:", e);
-    }
+      syncMusicUI();
+    });
+
+    volumeSlider?.addEventListener("input", (e) => {
+      bgm.volume = parseFloat(e.target.value);
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && !bgm.paused) bgm.pause();
+      syncMusicUI();
+    });
+
     syncMusicUI();
-  });
-
-  volumeSlider?.addEventListener("input", (e) => {
-    if (bgm) bgm.volume = parseFloat(e.target.value);
-  });
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden && bgm && !bgm.paused) {
-      bgm.pause();
-    }
-    syncMusicUI();
-  });
-
-  syncMusicUI();
+  }
 
   /* ==============================================================
    * INFORMATION 섹션 배경 비디오 (아침/밤 디졸브)
