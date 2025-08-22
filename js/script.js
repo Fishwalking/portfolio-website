@@ -435,148 +435,46 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("pageshow", syncMusicUI);
   syncMusicUI();
 
-  /* ------------------------------
-   * 카드 라이트 글로우
-   * ------------------------------ */
-  document.querySelectorAll(".card.card--border-glow").forEach((card) => {
-    card.addEventListener("mousemove", (e) => {
-      const r = card.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width) * 100;
-      const y = ((e.clientY - r.top) / r.height) * 100;
-      card.style.setProperty("--glow-x", x + "%");
-      card.style.setProperty("--glow-y", y + "%");
-      card.style.setProperty("--glow-intensity", "1");
-    });
-    card.addEventListener("mouseleave", () =>
-      card.style.setProperty("--glow-intensity", "0")
-    );
-  });
-
   /* ==============================================================
    * INFORMATION 섹션 배경 비디오 (아침/밤 디졸브)
    * - 15초 간격으로 교차
-   * - 등장 순간 원하는 지점으로 시크 (아침=0초, 밤=NIGHT_START_AT)
-   * - 영상이 끝나면 0초부터 자동 재생
    * ============================================================== */
   (() => {
     const infoSection = document.getElementById("information");
     if (!infoSection) return;
 
-    // 비디오 엘리먼트
+    // 비디오 대신 iframe 엘리먼트를 가져옵니다.
     const day = document.getElementById("infoVideoDay");
     const night = document.getElementById("infoVideoNight");
-    if (!day || !night) return; // 두 개 다 있어야 동작
+    if (!day || !night) return;
 
     // 구성
-    const INTERVAL_MS = 10000; // 15초마다 디졸브
-    const DAY_START_AT = 0.0; // 아침은 0초부터 보여주기
-    const NIGHT_START_AT = 0; // 밤은 원하는 시작 구간(원하면 0으로 바꿔도 됨)
-
-    // 매번 등장할 때마다 해당 시점으로 리셋할지
-    const RESET_DAY_ON_EVERY_FADE = true;
-    const RESET_NIGHT_ON_EVERY_FADE = true;
-
-    // iOS 등 자동재생 정책 대비: 확실한 속성/상태
-    [day, night].forEach((v) => {
-      v.muted = true;
-      v.playsInline = true;
-      v.setAttribute("playsinline", "");
-      v.loop = true; // 끝나면 자동 0초로
-      v.preload = v.preload || "auto";
-    });
+    const INTERVAL_MS = 10000;
 
     const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)");
     const shouldPause = () => prefersReduced.matches || document.hidden;
-
     let timer = null;
-    let active = day; // 현재 화면에 보이는 비디오
-    let idle = night; // 다음에 보일 비디오
+    let active = day;
+    let idle = night;
 
-    // 안전 시크
-    const seekWhenReady = (video, t) => {
-      const doSeek = () => {
-        const dur = video.duration;
-        const safeT =
-          isFinite(dur) && dur > 0
-            ? Math.min(Math.max(0, t), dur - 0.1)
-            : Math.max(0, t);
-        try {
-          video.currentTime = safeT;
-        } catch (e) {}
-      };
-      if (video.readyState >= 1) doSeek();
-      else video.addEventListener("loadedmetadata", doSeek, { once: true });
-    };
-
-    const playBoth = () =>
-      [day, night].forEach((v) => v.play().catch(() => {}));
-    const pauseBoth = () => [day, night].forEach((v) => v.pause());
-
-    // 끝나면(루프가 꺼져 있어도) 0부터 다시
-    [day, night].forEach((v) => {
-      v.addEventListener("ended", () => {
-        try {
-          v.currentTime = 0;
-          v.play().catch(() => {});
-        } catch (e) {}
-      });
-    });
-
-    // 최초 활성 비디오 클래스 보정
-    const ensureInitialClasses = () => {
-      day.classList.add("bg-video");
-      night.classList.add("bg-video");
-      if (
-        !day.classList.contains("is-active") &&
-        !night.classList.contains("is-active")
-      ) {
-        day.classList.add("is-active");
-      }
-      active = day.classList.contains("is-active") ? day : night;
-      idle = active === day ? night : day;
-    };
-    ensureInitialClasses();
-
-    // 다음에 보일 비디오가 등장하기 직전, 시작 시점으로 점프
-    const prepareIdle = () => {
-      if (idle === day) {
-        if (RESET_DAY_ON_EVERY_FADE) seekWhenReady(day, DAY_START_AT);
-      } else if (idle === night) {
-        if (RESET_NIGHT_ON_EVERY_FADE) seekWhenReady(night, NIGHT_START_AT);
-      }
-    };
-
-    // 교차 디졸브
     const crossfade = () => {
-      prepareIdle(); // 등장 비디오를 먼저 시크
-
-      // 디졸브
       idle.classList.add("is-active");
       active.classList.remove("is-active");
 
-      // 스왑
       [active, idle] = [idle, active];
-
-      // 재생 보장
-      playBoth();
     };
 
-    // 시작/중지
     const start = () => {
       if (timer || shouldPause()) return;
-      // 첫 사이클 전, 다음에 나올 비디오(=idle)를 시작 지점으로 맞춰둠
-      prepareIdle();
-      playBoth();
       timer = setInterval(crossfade, INTERVAL_MS);
     };
+
     const stop = () => {
       if (!timer) return;
       clearInterval(timer);
       timer = null;
-      pauseBoth();
     };
 
-    // 2페이지가 보일 때만 동작
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) =>
@@ -587,7 +485,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     io.observe(infoSection);
 
-    // 탭/OS 상태 변화
     document.addEventListener("visibilitychange", () =>
       document.hidden ? stop() : start()
     );
@@ -595,7 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
       shouldPause() ? stop() : start()
     );
 
-    // 페이지 로드시 한번 시도
+    // 페이지 로드 시 한 번 실행
     start();
   })();
 });
