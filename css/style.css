@@ -74,7 +74,7 @@ a {
   text-align: center;
   overflow: hidden;
   padding-bottom: 56px;
-  transition: background-color 0.8s ease-in-out; /* 배경색 전환 효과 추가 */
+  transition: background-color 0.8s ease-in-out;
 }
 .section-content {
   z-index: 10;
@@ -82,24 +82,19 @@ a {
   padding: 2rem;
 }
 
-/* --- ▼ [추가] 섹션별 배경색 정의 --- */
-/* 이미 배경 요소(영상 등)가 있는 섹션은 이 스타일이 적용되지 않습니다. */
+/* 섹션별 배경색 정의 */
 .light-bg {
-  background-color: #f0f2f5; /* 밝은 회색 계열 */
-  color: #333; /* 밝은 배경에 맞춰 텍스트 색상 변경 */
+  background-color: #f0f2f5;
+  color: #333;
 }
-
 .dark-bg {
-  background-color: #18191a; /* 기본 어두운 배경보다 살짝 밝게 */
+  background-color: #18191a;
   color: var(--text);
 }
-
-/* 텍스트 색상이 바뀌는 섹션의 링크 색상 조정 */
 .light-bg .nav-links a:hover,
 .light-bg .nav-links a[aria-current="page"] {
-  color: #c8a000; /* 어두운 노란색으로 조정 */
+  color: #c8a000;
 }
-/* --- ▲ [추가] 섹션별 배경색 정의 --- */
 
 /* header */
 .header {
@@ -193,30 +188,9 @@ a {
   z-index: -2;
   filter: brightness(0.65) saturate(1.1);
   transition: opacity 0.4s ease;
-  /* [추가] 배경색이 비치지 않도록 배경을 지정합니다. */
   background-color: var(--bg);
 }
 
-#index.has-aurora .section-bg-video {
-  opacity: 0;
-}
-#index.has-aurora .aurora-layer {
-  opacity: 1;
-}
-
-.aurora-layer {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  overflow: hidden;
-  /* [추가] 배경색이 비치지 않도록 배경을 지정합니다. */
-  background-color: var(--bg);
-}
-
-/* === INFORMATION 섹션 배경 비디오: 겹치기 + 디졸브 === */
 #information .bg-video {
   position: absolute;
   inset: 0;
@@ -227,14 +201,11 @@ a {
   transition: opacity 1000ms ease-in-out;
   pointer-events: none;
   filter: blur(6px) saturate(1.05) brightness(0.95);
-  /* [추가] 배경색이 비치지 않도록 배경을 지정합니다. */
   background-color: var(--bg);
 }
 #information .bg-video.is-active {
   opacity: 1;
 }
-
-/* 비디오 위에 살짝 블러 필름 느낌 */
 #information::before {
   content: "";
   position: absolute;
@@ -251,14 +222,10 @@ a {
   font-size: clamp(2rem, 3vw, 3rem);
   font-weight: 900;
   letter-spacing: 0.02em;
-  color: var(--text); /* [수정] 텍스트 색상 강제 지정 */
+  color: var(--text);
 }
 .hero-sub {
   margin-top: 0.5rem;
-  color: var(--muted);
-}
-/* #index 섹션은 자체 배경이 있으므로, light-bg의 텍스트 색상 변경을 원래대로 되돌립니다. */
-#index .hero-sub {
   color: var(--muted);
 }
 
@@ -307,7 +274,7 @@ a {
   transform: translateY(0);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   will-change: transform, box-shadow;
-  color: var(--text); /* [수정] 텍스트 색상 강제 지정 */
+  color: var(--text);
 }
 .news-card::after {
   content: "";
@@ -373,8 +340,6 @@ a {
   font-size: 0.85rem;
   color: var(--muted);
 }
-
-/* 밝은 배경의 캐러셀 카드 스타일 조정 */
 .light-bg .op-card {
   background: #fff;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
@@ -382,7 +347,6 @@ a {
 .light-bg .op-meta {
   color: #666;
 }
-
 .carousel-nav {
   position: absolute;
   top: 50%;
@@ -446,11 +410,9 @@ a {
 .btn-primary:hover {
   filter: brightness(0.95);
 }
-
 .light-bg .btn-primary {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
-
 .modal-overlay {
   display: none;
   position: fixed;
@@ -478,7 +440,7 @@ a {
   cursor: pointer;
 }
 .close-btn::before {
-  content: "×"; /* Using a character for the close icon */
+  content: "×";
 }
 .video-wrapper {
   position: relative;
@@ -568,29 +530,11 @@ a {
   }
 }
 
-/* CSS Aurora fallback (reactbits 스타일) */
-.aurora-css {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  overflow: hidden;
-}
-.aurora-css .blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.6;
-  mix-blend-mode: screen;
-  will-change: transform;
-}
-.aurora-css[data-waapi="1"] .blob {
-  animation: none !important;
-}
-
-/* --- ▼ [수정] Dark Veil 배경이 보이도록 #index 섹션의 배경을 투명하게 만듭니다. --- */
+/* --- ▼ [수정] Dark Veil 배경과 콘텐츠 레이어 정리 --- */
 #index.full-page-section {
-  background-color: transparent;
+  background: transparent; /* 섹션 자체 배경을 투명하게 만듦 */
 }
+#index .section-content {
+  position: relative; /* z-index가 작동하도록 position 속성 추가 */
+}
+/* --- ▲ 수정 끝 --- */
