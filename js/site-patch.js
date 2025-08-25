@@ -210,6 +210,7 @@
   // auto-mount all
   $$("[data-day-night]").forEach(mount);
 })();
+
 document.addEventListener("DOMContentLoaded", function () {
   const sliderContainer = document.querySelector(".packaging-slider-container");
   if (!sliderContainer) return;
@@ -219,27 +220,38 @@ document.addEventListener("DOMContentLoaded", function () {
   const prevBtn = sliderContainer.querySelector(".prev-btn");
   const nextBtn = sliderContainer.querySelector(".next-btn");
 
-  let currentIndex = 0; // 0: figma, 1: images
-  const offsets = [0]; // 각 슬라이드 시작 위치 저장 배열
+  let currentIndex = 0; // 0: figma1, 1: images, 2: figma2
+  const offsets = [0];
 
   function calculateOffsets() {
-    // 첫번째 슬라이드(Figma) 너비 저장
-    let currentOffset = slides[0].offsetWidth + 16; // 16 = padding * 2
-    offsets.push(currentOffset);
+    offsets.length = 1;
+    let position = 0;
+
+    // 0: Figma 1
+    position += slides[0].offsetWidth + 16;
+    offsets.push(position);
+
+    // 1: Images
+    position += (slides[1].offsetWidth + 16) * 3;
+    offsets.push(position);
+
+    // 2: Figma 2 (small) - 마지막 위치는 계산할 필요 없음
   }
 
   function moveTo(index) {
-    if (index < 0) index = 1;
-    if (index > 1) index = 0;
+    if (index < 0) {
+      index = 2;
+    } else if (index > 2) {
+      index = 0;
+    }
 
-    slider.style.transform = `translateX(-${offsets[index]}px)`;
+    slider.style.transform = `translateX(-${offsets[index] || 0}px)`;
     currentIndex = index;
   }
 
-  // 초기화 함수
   function initializeSlider() {
     calculateOffsets();
-    moveTo(0);
+    moveTo(currentIndex);
   }
 
   nextBtn.addEventListener("click", () => moveTo(currentIndex + 1));
@@ -275,10 +287,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // 창 크기가 변경될 때 슬라이더 재계산
   window.addEventListener("resize", initializeSlider);
-
-  // 초기 실행
-  // 이미지가 모두 로드된 후 슬라이더 초기화 (너비 계산 정확도 향상)
   window.addEventListener("load", initializeSlider);
 });
