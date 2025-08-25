@@ -389,31 +389,3 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   })();
 });
-/* --- ▼ [추가] 두 번째 페이지 영상 교차 재생 기능 --- */
-const infoSection = document.getElementById("information");
-if (infoSection) {
-  const infoVideoDay = document.getElementById("infoVideoDay");
-  const infoVideoNight = document.getElementById("infoVideoNight");
-  let videoInterval;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // 섹션이 보일 때 5초마다 영상 전환 시작
-          videoInterval = setInterval(() => {
-            infoVideoDay.classList.toggle("is-active");
-            infoVideoNight.classList.toggle("is-active");
-          }, 5000); // 5초 간격
-        } else {
-          // 섹션이 보이지 않으면 인터벌 중지
-          clearInterval(videoInterval);
-        }
-      });
-    },
-    { threshold: 0.1 } // 섹션이 10% 이상 보일 때 감지
-  );
-
-  observer.observe(infoSection);
-}
-/* --- ▲ [추가] 두 번째 페이지 영상 교차 재생 기능 --- */

@@ -118,12 +118,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#magic-bento-root .card--text-autohide .card__title {
-  -webkit-line-clamp: 1;
-}
-#magic-bento-root .card--text-autohide .card__description {
-  -webkit-line-clamp: 2;
-}
 
 /* 보더 글로우 */
 #magic-bento-root .card--border-glow::after {
