@@ -8,144 +8,6 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/MagicBento.css" />
     <link rel="stylesheet" href="css/darkveil.css" />
-    <style>
-      .packaging-slider-container {
-        position: relative;
-        width: 100%;
-        max-width: 900px;
-        margin: 2rem auto;
-        overflow: hidden;
-      }
-
-      .packaging-slider {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
-      }
-
-      .slide {
-        flex: 0 0 calc(100% / 3);
-        padding: 0 8px;
-        box-sizing: border-box;
-        cursor: pointer;
-      }
-
-      .slide.figma-slide {
-        cursor: default;
-      }
-
-      .slide img {
-        width: 100%;
-        height: auto;
-        border-radius: 8px;
-        display: block;
-      }
-
-      .slide iframe {
-        width: 100%;
-        height: 250px; /* 슬라이더 내 iframe 높이 조절 */
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .slider-nav {
-        position: absolute;
-        top: 50%;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        transform: translateY(-50%);
-        pointer-events: none;
-      }
-
-      .slider-btn {
-        pointer-events: all;
-        background-color: rgba(0, 0, 0, 0.5);
-        border: none;
-        color: white;
-        font-size: 2rem;
-        cursor: pointer;
-        outline: none;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-        text-align: center;
-        z-index: 10;
-      }
-
-      .slider-btn:hover {
-        opacity: 1;
-      }
-
-      .slider-btn.prev-btn {
-        margin-left: -50px;
-      }
-
-      .slider-btn.next-btn {
-        margin-right: -50px;
-      }
-
-      /* Lightbox (Modal) Styles */
-      .lightbox {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.85);
-        justify-content: center;
-        align-items: center;
-      }
-
-      .lightbox-content {
-        position: relative;
-        max-width: 80%;
-        max-height: 80%;
-        text-align: center;
-      }
-
-      .lightbox-content img {
-        max-width: 100%;
-        max-height: 100%;
-        border-radius: 8px;
-      }
-
-      #lightbox-caption {
-        margin-top: 15px;
-        color: #ccc;
-        font-size: 1rem;
-      }
-
-      .lightbox-close {
-        position: absolute;
-        top: -40px;
-        right: 0;
-        color: #fff;
-        font-size: 40px;
-        font-weight: bold;
-        transition: 0.3s;
-        cursor: pointer;
-      }
-
-      @media (max-width: 768px) {
-        .slide {
-          flex: 0 0 100%;
-        }
-        .slider-btn.prev-btn {
-          margin-left: 10px;
-        }
-        .slider-btn.next-btn {
-          margin-right: 10px;
-        }
-        .lightbox-content {
-          max-width: 90%;
-        }
-      }
-    </style>
   </head>
   <body>
     <div id="dark-veil" aria-hidden="true"></div>
@@ -405,20 +267,20 @@
 
           <div class="packaging-slider-container">
             <div class="packaging-slider">
-              <div class="slide" data-filename="packaging_front.png">
-                <img src="img/packaging_classic_front.png" alt="패키징 앞면" />
-              </div>
-              <div class="slide" data-filename="packaging_back.png">
-                <img src="img/packaging_classic_bottle.png" alt="패키징 뒷면" />
-              </div>
-              <div class="slide" data-filename="packaging_bottle.png">
-                <img src="img/packaging_classic_back.png" alt="패키징 용기" />
-              </div>
               <div class="slide figma-slide">
                 <iframe
                   src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fz1jsczW1nYoqflUh37lJ6q%2F-%25EC%2598%25A8%25EC%2584%25B8%25EB%25AF%25B8%25EB%25A1%259C-%3Fpage-id%3D0%253A1%26node-id%3D23-3%26viewport%3D11275%252C940%252C0.24%26t%3DHYX1ajgBFtaVpXbz-1%26scaling%3Dcontain%26content-scaling%3Dfixed"
                   allowfullscreen
                 ></iframe>
+              </div>
+              <div class="slide" data-filename="packaging_classic_front.png">
+                <img src="img/packaging_classic_front.png" alt="패키징 앞면" />
+              </div>
+              <div class="slide" data-filename="packaging_classic_back.png">
+                <img src="img/packaging_classic_back.png" alt="패키징 뒷면" />
+              </div>
+              <div class="slide" data-filename="packaging_classic_bottle.png">
+                <img src="img/packaging_classic_bottle.png" alt="패키징 용기" />
               </div>
             </div>
             <div class="slider-nav">
@@ -526,6 +388,7 @@
     </footer>
 
     <script src="js/script.js" defer></script>
+    <script src="js/site-patch.js" defer></script>
     <script type="module" src="js/darkveil.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -535,80 +398,5 @@
       data-presets="env,react"
       src="js/magic-bento.jsx"
     ></script>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const slider = document.querySelector(".packaging-slider");
-        if (!slider) return;
-
-        const slides = Array.from(slider.children);
-        const prevBtn = document.querySelector(".prev-btn");
-        const nextBtn = document.querySelector(".next-btn");
-        let currentIndex = 0;
-        let slideCount = slides.length;
-        let slidesToShow = window.innerWidth <= 768 ? 1 : 3;
-
-        function updateSlider() {
-          slidesToShow = window.innerWidth <= 768 ? 1 : 3;
-          slides.forEach((slide) => {
-            slide.style.flex = `0 0 calc(100% / ${slidesToShow})`;
-          });
-          moveTo(currentIndex, false);
-        }
-
-        function moveTo(index, transition = true) {
-          if (index < 0) {
-            index = slideCount - slidesToShow;
-          } else if (index > slideCount - slidesToShow) {
-            index = 0;
-          }
-
-          slider.style.transition = transition
-            ? "transform 0.5s ease-in-out"
-            : "none";
-          slider.style.transform = `translateX(-${
-            index * (100 / slidesToShow)
-          }%)`;
-          currentIndex = index;
-        }
-
-        nextBtn.addEventListener("click", () => moveTo(currentIndex + 1));
-        prevBtn.addEventListener("click", () => moveTo(currentIndex - 1));
-        window.addEventListener("resize", updateSlider);
-
-        // Lightbox functionality
-        const lightbox = document.getElementById("image-lightbox");
-        const lightboxImg = document.getElementById("lightbox-image");
-        const lightboxCaption = document.getElementById("lightbox-caption");
-        const closeBtn = document.querySelector(".lightbox-close");
-
-        slides.forEach((slide) => {
-          if (slide.querySelector("img")) {
-            slide.addEventListener("click", () => {
-              const img = slide.querySelector("img");
-              const filename = slide.dataset.filename;
-
-              lightbox.style.display = "flex";
-              lightboxImg.src = img.src;
-              lightboxCaption.textContent = filename;
-            });
-          }
-        });
-
-        function closeLightbox() {
-          lightbox.style.display = "none";
-        }
-
-        closeBtn.addEventListener("click", closeLightbox);
-        lightbox.addEventListener("click", (e) => {
-          if (e.target === lightbox) {
-            closeLightbox();
-          }
-        });
-
-        // Initial setup
-        updateSlider();
-      });
-    </script>
   </body>
 </html>

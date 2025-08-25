@@ -210,3 +210,75 @@
   // auto-mount all
   $$("[data-day-night]").forEach(mount);
 })();
+document.addEventListener("DOMContentLoaded", function () {
+  const sliderContainer = document.querySelector(".packaging-slider-container");
+  if (!sliderContainer) return;
+
+  const slider = sliderContainer.querySelector(".packaging-slider");
+  const slides = Array.from(slider.children);
+  const prevBtn = sliderContainer.querySelector(".prev-btn");
+  const nextBtn = sliderContainer.querySelector(".next-btn");
+
+  let currentIndex = 0; // 0: figma, 1: images
+  const offsets = [0]; // 각 슬라이드 시작 위치 저장 배열
+
+  function calculateOffsets() {
+    // 첫번째 슬라이드(Figma) 너비 저장
+    let currentOffset = slides[0].offsetWidth + 16; // 16 = padding * 2
+    offsets.push(currentOffset);
+  }
+
+  function moveTo(index) {
+    if (index < 0) index = 1;
+    if (index > 1) index = 0;
+
+    slider.style.transform = `translateX(-${offsets[index]}px)`;
+    currentIndex = index;
+  }
+
+  // 초기화 함수
+  function initializeSlider() {
+    calculateOffsets();
+    moveTo(0);
+  }
+
+  nextBtn.addEventListener("click", () => moveTo(currentIndex + 1));
+  prevBtn.addEventListener("click", () => moveTo(currentIndex - 1));
+
+  // Lightbox functionality
+  const lightbox = document.getElementById("image-lightbox");
+  const lightboxImg = document.getElementById("lightbox-image");
+  const lightboxCaption = document.getElementById("lightbox-caption");
+  const closeBtn = document.querySelector(".lightbox-close");
+
+  slides.forEach((slide) => {
+    if (slide.hasAttribute("data-filename")) {
+      slide.addEventListener("click", () => {
+        const img = slide.querySelector("img");
+        const filename = slide.dataset.filename;
+
+        lightbox.style.display = "flex";
+        lightboxImg.src = img.src;
+        lightboxCaption.textContent = filename;
+      });
+    }
+  });
+
+  function closeLightbox() {
+    lightbox.style.display = "none";
+  }
+
+  closeBtn.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  // 창 크기가 변경될 때 슬라이더 재계산
+  window.addEventListener("resize", initializeSlider);
+
+  // 초기 실행
+  // 이미지가 모두 로드된 후 슬라이더 초기화 (너비 계산 정확도 향상)
+  window.addEventListener("load", initializeSlider);
+});
