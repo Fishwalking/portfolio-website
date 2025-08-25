@@ -1,316 +1,212 @@
 /*!
- * site-patch.js (v2)
- * - Dark Veil in hero
- * - Infinite carousel (operators section)
- * - Smooth transitions between pages (soft navigation + View Transitions API)
- * - Smooth anchor scrolling
+ * Day↔Night YouTube Crossfade (0s start on counterpart after fade-out)
+ * HTML:
+ * <section class="dn-hero" data-day-night data-day-yt="Ieft0mUOElo" data-night-yt="ZpRuNjeJ7Rs"></section>
+ * Optional triggers: <button data-go-night>, <button data-go-day>
  */
 (function () {
-  // ---------- Utilities ----------
-  const $ = (sel, ctx = document) => ctx.querySelector(sel);
-  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
-  function injectGlobalCSS() {
-    if (document.querySelector('style[data-site-patch="1"]')) return;
-    const css = String.raw`
-html{scroll-behavior:smooth;} /* smooth in-page anchors */
-
-/* ===== Dark Veil overlay (inside hero) ===== */
-.rb-veil{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-  background:
-    radial-gradient(150% 100% at 50% 0%, rgba(147,51,234,.16), transparent 45%),
-    radial-gradient(120% 90% at 50% 100%, rgba(99,102,241,.12), transparent 55%),
-    linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.88) 60%, rgba(0,0,0,.92));
-  filter:saturate(115%);
-  contain: paint; /* reduce repaint area */
-}
-.rb-veil .blob{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(70px);
-  mix-blend-mode:screen;opacity:.7;will-change:transform;}
-.rb-veil .b1{left:-10vmax;top:-12vmax;
-  background:radial-gradient(circle at 30% 30%, rgba(168,85,247,.85), rgba(76,29,149,.2) 60%, transparent 65%);
-  animation:veilFloat1 18s ease-in-out infinite alternate;}
-.rb-veil .b2{right:-8vmax;top:-6vmax;
-  background:radial-gradient(circle at 60% 40%, rgba(79,70,229,.75), rgba(30,27,75,.18) 60%, transparent 65%);
-  animation:veilFloat2 24s ease-in-out infinite alternate;}
-.rb-veil .b3{left:35vw;top:35vh;
-  background:radial-gradient(circle at 50% 50%, rgba(236,72,153,.40), transparent 65%);
-  animation:veilFloat3 20s ease-in-out infinite alternate;opacity:.5;}
-@keyframes veilFloat1{0%{transform:translate3d(0,0,0) scale(1);}100%{transform:translate3d(20%,8%,0) rotate(10deg) scale(1.05);}}
-@keyframes veilFloat2{0%{transform:translate3d(0,0,0) scale(1.05);}100%{transform:translate3d(-14%,12%,0) rotate(-8deg) scale(1);}}
-@keyframes veilFloat3{0%{transform:translate3d(0,0,0) scale(1);}100%{transform:translate3d(-10%,-10%,0) rotate(6deg) scale(1.08);}}
-@media (prefers-reduced-motion: reduce){.rb-veil .blob{animation:none;}}
-/* Make sure hero content sits above veil */
-.rb-veil-host{position:relative;isolation:isolate;}
-.rb-veil-host > *:not(.rb-veil){position:relative;z-index:1;}
-
-/* ===== Infinite carousel base ===== */
-._infcar-root{position:relative;overflow:hidden;}
-._infcar-track{display:flex;gap:24px;will-change:transform;transition:transform .5s ease;flex-wrap:nowrap;}
-._infcar-track > *{flex:0 0 auto;}
-._infcar-arrow{position:absolute;top:50%;transform:translateY(-50%);
-  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
-  background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);
-  color:#fff;font-size:18px;line-height:1;cursor:pointer;z-index:5;user-select:none;}
-._infcar-arrow.left{left:8px;} ._infcar-arrow.right{right:8px;}
-._infcar-arrow:focus{outline:none;box-shadow:0 0 0 3px rgba(147,51,234,.5);}
-
-/* ===== Fade overlay fallback for page transitions ===== */
-.site-fade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:99999;transition:opacity .35s ease;}
-.site-fade.is-active{opacity:.5;pointer-events:auto;}
+  // --- CSS inject (no external file) ---
+  (function injectCSS() {
+    if (document.querySelector("style[data-dnfx]")) return;
+    const css = `
+.dn-hero[data-day-night]{position:relative;isolation:isolate;overflow:hidden;background:#000;}
+.dn-hero[data-day-night] .dn-layer{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;will-change:opacity;}
+.dn-hero[data-day-night] .dn-layer.is-show{opacity:1;}
+.dn-hero[data-day-night] .dn-layer iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none; /* 배경 용도 */ }
+.dn-hero[data-day-night].is-busy::after{content:'';position:absolute;inset:0;pointer-events:auto;} /* 전환 중 클릭 차단(선택) */
+@media (prefers-reduced-motion: reduce){ .dn-hero[data-day-night] .dn-layer{transition:none;} }
 `;
-    const style = document.createElement("style");
-    style.setAttribute("data-site-patch", "1");
-    style.textContent = css;
-    document.head.appendChild(style);
-  }
+    const el = document.createElement("style");
+    el.setAttribute("data-dnfx", "1");
+    el.textContent = css;
+    document.head.appendChild(el);
+  })();
 
-  function mountDarkVeil(root = document) {
-    // find hero container
-    const hero =
-      root.querySelector("#home, #hero, .hero, .hero-section, .section-hero") ||
-      $$("main section, body > section", root).find(
-        (sec) =>
-          sec.getBoundingClientRect().top < 200 && sec.querySelector("h1,h2")
-      ) ||
-      root.body ||
-      root;
-    if (!hero) return;
-    const host = hero;
-    host.classList.add("rb-veil-host");
-    if (!host.querySelector(".rb-veil")) {
-      const veil = document.createElement("div");
-      veil.className = "rb-veil";
-      veil.setAttribute("aria-hidden", "true");
-      veil.innerHTML =
-        '<span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>';
-      host.prepend(veil);
+  // --- YouTube IFrame API loader ---
+  let ytReady = !!(window.YT && YT.Player);
+  const readyQ = [];
+  function ensureYT(cb) {
+    if (ytReady) {
+      cb();
+      return;
     }
-  }
-
-  function mountInfiniteCarousel(root = document) {
-    // locate section by heading text
-    const headings = $$("h2,h3", root);
-    const targetHeading = headings.find((h) =>
-      /오퍼레이터|operator/i.test(h.textContent || "")
-    );
-    const sec = targetHeading
-      ? targetHeading.closest("section") || targetHeading.parentElement
-      : null;
-    if (!sec) return;
-
-    // find track
-    let track = null;
-    const containers = $$("div, ul, ol, .track", sec).filter(
-      (el) => el.children && el.children.length >= 3
-    );
-    for (const c of containers) {
-      const items = Array.from(c.children).filter((n) =>
-        n.matches(".card, article, li, .operator-card")
-      );
-      if (items.length >= 3) {
-        track = c;
-        break;
-      }
-    }
-    if (!track) return;
-
-    if (!sec.classList.contains("_infcar-root")) {
-      sec.classList.add("_infcar-root");
-      track.classList.add("_infcar-track");
-
-      let prevBtn = sec.querySelector(
-        '[data-prev], .prev, .left, .arrow-left, button[aria-label="이전"], button[aria-label="prev"]'
-      );
-      let nextBtn = sec.querySelector(
-        '[data-next], .next, .right, .arrow-right, button[aria-label="다음"], button[aria-label="next"]'
-      );
-      function mkArrow(dir) {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "_infcar-arrow " + (dir === -1 ? "left" : "right");
-        b.setAttribute("aria-label", dir === -1 ? "이전" : "다음");
-        b.textContent = dir === -1 ? "‹" : "›";
-        sec.appendChild(b);
-        return b;
-      }
-      if (!prevBtn) prevBtn = mkArrow(-1);
-      if (!nextBtn) nextBtn = mkArrow(+1);
-
-      // state
-      let originals = Array.from(track.children).filter(
-        (n) => n.nodeType === 1
-      );
-      if (originals.length < 3) return;
-
-      const computedGap = () => {
-        const cs = getComputedStyle(track);
-        const gap = parseFloat(cs.columnGap || cs.gap || "0");
-        return isNaN(gap) ? 0 : gap;
+    readyQ.push(cb);
+    if (!window._dnfxYtLoading) {
+      window._dnfxYtLoading = true;
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function () {
+        ytReady = true;
+        prev && prev();
+        readyQ.splice(0).forEach((fn) => fn());
       };
-      const itemWidth = () => originals[0].getBoundingClientRect().width;
-      const trackWidth = () => track.getBoundingClientRect().width;
-      const perView = () =>
-        Math.max(1, Math.round(trackWidth() / (itemWidth() + computedGap())));
-
-      function mountClones() {
-        Array.from(track.children).forEach(
-          (el) => el.dataset && el.dataset.clone && el.remove()
-        );
-        originals = Array.from(track.children).filter(
-          (el) => !el.dataset.clone
-        );
-        const pv = perView();
-        const head = originals.slice(0, pv).map((n) => {
-          const c = n.cloneNode(true);
-          c.dataset.clone = "1";
-          return c;
-        });
-        const tail = originals.slice(-pv).map((n) => {
-          const c = n.cloneNode(true);
-          c.dataset.clone = "1";
-          return c;
-        });
-        track.prepend(...tail);
-        track.append(...head);
-      }
-
-      let idx = 0;
-      let step = 0;
-
-      function recalc() {
-        mountClones();
-        const pv = perView();
-        const firstReal = track.children[pv];
-        const cs = getComputedStyle(track);
-        const gap = parseFloat(cs.columnGap || cs.gap || "0") || 0;
-        step = firstReal.getBoundingClientRect().width + gap;
-        track.style.transition = "none";
-        track.style.transform = `translate3d(${-(idx + pv) * step}px,0,0)`;
-        track.offsetHeight;
-        track.style.transition = "transform .5s ease";
-      }
-
-      function go(dir) {
-        idx += dir;
-        const pv = perView();
-        track.style.transform = `translate3d(${-(idx + pv) * step}px,0,0)`;
-      }
-
-      track.addEventListener("transitionend", () => {
-        const len = originals.length;
-        if (idx >= len) {
-          idx -= len;
-          recalc();
-        } else if (idx < 0) {
-          idx += len;
-          recalc();
-        }
-      });
-
-      prevBtn.addEventListener("click", () => go(-1));
-      nextBtn.addEventListener("click", () => go(+1));
-      window.addEventListener("resize", recalc);
-      document.fonts &&
-        document.fonts.ready &&
-        document.fonts.ready.then(recalc);
-      recalc();
     }
   }
 
-  function mountAll(root = document) {
-    injectGlobalCSS();
-    mountDarkVeil(root);
-    mountInfiniteCarousel(root);
-  }
-
-  // ---------- Soft navigation (same-origin links) ----------
-  function enableSoftNavigation() {
-    // fade overlay (fallback when View Transitions unsupported)
-    let fade = document.querySelector(".site-fade");
-    if (!fade) {
-      fade = document.createElement("div");
-      fade.className = "site-fade";
-      document.body.appendChild(fade);
-    }
-
-    async function loadDoc(url) {
-      const res = await fetch(url, { credentials: "same-origin" });
-      if (!res.ok) throw new Error("Fetch failed: " + res.status);
-      const html = await res.text();
-      const tpl = document.createElement("template");
-      tpl.innerHTML = html;
-      const doc = tpl.content;
-      const newMain =
-        doc.querySelector("main") ||
-        doc.querySelector("#app") ||
-        doc.querySelector("body");
-      const curMain =
-        document.querySelector("main") ||
-        document.querySelector("#app") ||
-        document.body;
-      if (!newMain || !curMain) return false;
-
-      function swap() {
-        // Replace main contents
-        curMain.innerHTML = newMain.innerHTML;
-        // Update title
-        const newTitle =
-          (doc.querySelector("title") &&
-            doc.querySelector("title").textContent) ||
-          document.title;
-        document.title = newTitle;
-        // Re-run mounts on the current document
-        mountAll(document);
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: "instant" });
-      }
-
-      if (document.startViewTransition) {
-        await document.startViewTransition(swap).finished;
-      } else {
-        // Fade fallback
-        fade.classList.add("is-active");
-        await new Promise((r) => setTimeout(r, 120));
-        swap();
-        await new Promise((r) => setTimeout(r, 80));
-        fade.classList.remove("is-active");
-      }
-      return true;
-    }
-
-    // Intercept anchor clicks
-    document.addEventListener("click", (e) => {
-      const a = e.target.closest("a[href]");
-      if (!a) return;
-      // ignore modifiers/new tab/download/external
-      if (
-        e.defaultPrevented ||
-        e.button !== 0 ||
-        a.target === "_blank" ||
-        a.hasAttribute("download") ||
-        a.hasAttribute("data-no-soft-nav")
-      )
-        return;
-      const url = new URL(a.href, location.href);
-      if (url.origin !== location.origin) return;
-      // In-page hash: let default smooth scroll handle
-      if (url.pathname === location.pathname && url.hash) return;
-      e.preventDefault();
-      loadDoc(url.href)
-        .then((ok) => {
-          if (ok) history.pushState({}, "", url.href);
-          else location.href = url.href; // fallback
-        })
-        .catch(() => (location.href = url.href));
-    });
-
-    // Handle back/forward
-    window.addEventListener("popstate", () => {
-      loadDoc(location.href).catch(() => location.reload());
+  // --- YouTube helpers ---
+  function makePlayer(el, videoId) {
+    return new YT.Player(el, {
+      videoId,
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        disablekb: 1,
+        rel: 0,
+        playsinline: 1,
+        modestbranding: 1,
+        iv_load_policy: 3,
+        // loop하려면 playlist=videoId 필요(선택):
+        // loop:1, playlist: videoId,
+        fs: 0,
+      },
+      events: {
+        onReady: (e) => {
+          try {
+            e.target.mute();
+            e.target.seekTo(0, true);
+            e.target.pauseVideo();
+          } catch (_) {}
+        },
+      },
+      host: "https://www.youtube.com",
     });
   }
+  const resetToZero = (p) => {
+    try {
+      p.pauseVideo();
+      p.seekTo(0, true);
+    } catch (_) {}
+  };
+  const startFromZero = (p) => {
+    try {
+      p.mute();
+      p.seekTo(0, true);
+      p.playVideo();
+    } catch (_) {}
+  };
 
-  // ---------- Boot ----------
-  mountAll(document);
-  enableSoftNavigation();
+  // --- Core mount ---
+  function mount(container) {
+    if (!container || container._dnMounted) return;
+    container._dnMounted = true;
+
+    const dayId = container.dataset.dayYt || "Ieft0mUOElo";
+    const nightId = container.dataset.nightYt || "ZpRuNjeJ7Rs";
+
+    // Layers
+    const dayLayer = document.createElement("div");
+    dayLayer.className = "dn-layer dn-day is-show"; // 초기: 아침 보임
+    const nightLayer = document.createElement("div");
+    nightLayer.className = "dn-layer dn-night";
+    const dayHost = document.createElement("div");
+    dayHost.id = "yt-day-" + Math.random().toString(36).slice(2);
+    const nightHost = document.createElement("div");
+    nightHost.id = "yt-night-" + Math.random().toString(36).slice(2);
+    dayLayer.appendChild(dayHost);
+    nightLayer.appendChild(nightHost);
+    container.append(dayLayer, nightLayer);
+
+    // Build players
+    let dayP,
+      nightP,
+      readyCount = 0;
+    function onBothReady() {
+      if (++readyCount < 2) return;
+      resetToZero(dayP);
+      resetToZero(nightP);
+    }
+
+    ensureYT(() => {
+      dayP = makePlayer(dayHost, dayId);
+      dayP.addEventListener("onReady", onBothReady);
+      nightP = makePlayer(nightHost, nightId);
+      nightP.addEventListener("onReady", onBothReady);
+    });
+
+    let current = "day";
+    let busy = false;
+    const FADE_MS = 600;
+
+    function crossfade(next) {
+      if (busy || next === current) return;
+      busy = true;
+      container.classList.add("is-busy");
+      const fromLayer = current === "day" ? dayLayer : nightLayer;
+      const toLayer = next === "day" ? dayLayer : nightLayer;
+      const fromP = current === "day" ? dayP : nightP;
+      const toP = next === "day" ? dayP : nightP;
+
+      // 미리 상대편 0초로 준비(재생은 ‘페이드아웃 완료’ 시점에 시작)
+      resetToZero(toP);
+
+      // 페이드아웃 시작
+      fromLayer.classList.remove("is-show");
+
+      const onOutEnd = (e) => {
+        if (e && e.propertyName && e.propertyName !== "opacity") return;
+        fromLayer.removeEventListener("transitionend", onOutEnd);
+        // 요구사항: 페이드아웃 끝난 ‘그 순간’ 반대편 0초부터 재생
+        startFromZero(toP);
+        toLayer.classList.add("is-show");
+
+        const onInEnd = (ev) => {
+          if (ev && ev.propertyName && ev.propertyName !== "opacity") return;
+          toLayer.removeEventListener("transitionend", onInEnd);
+          // 숨겨진쪽 리소스 절약 및 다음 전환 대비 0초로 고정
+          resetToZero(fromP);
+          busy = false;
+          container.classList.remove("is-busy");
+        };
+        toLayer.addEventListener("transitionend", onInEnd, { once: true });
+        current = next;
+      };
+      fromLayer.addEventListener("transitionend", onOutEnd, { once: true });
+      // 안전 폴백
+      setTimeout(() => {
+        try {
+          onOutEnd({ propertyName: "opacity" });
+        } catch (_) {}
+      }, FADE_MS + 60);
+    }
+
+    // Public API + 트리거
+    const api = {
+      toNight() {
+        crossfade("night");
+      },
+      toDay() {
+        crossfade("day");
+      },
+      get current() {
+        return current;
+      },
+      isBusy() {
+        return busy;
+      },
+    };
+    container._dnAPI = api;
+    window.DayNightFX = window.DayNightFX || api;
+
+    $$("[data-go-night]").forEach((b) =>
+      b.addEventListener("click", () => api.toNight())
+    );
+    $$("[data-go-day]").forEach((b) =>
+      b.addEventListener("click", () => api.toDay())
+    );
+
+    // 클래스 토글로도 제어 가능(옵션)
+    const mo = new MutationObserver(() => {
+      if (container.classList.contains("is-night")) api.toNight();
+      else if (container.classList.contains("is-day")) api.toDay();
+    });
+    mo.observe(container, { attributes: true, attributeFilter: ["class"] });
+  }
+
+  // auto-mount all
+  $$("[data-day-night]").forEach(mount);
 })();
