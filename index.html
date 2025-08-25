@@ -8,6 +8,69 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/MagicBento.css" />
     <link rel="stylesheet" href="css/darkveil.css" />
+    <style>
+      .packaging-slider-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .packaging-slider {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .slide {
+        flex: 0 0 calc(100% / 3); /* Initially show 3 images */
+        padding: 0 0.5rem;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: calc(100% / 3);
+      }
+
+      .slide img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+
+      .slider-nav {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transform: translateY(-50%);
+        padding: 0 1rem;
+      }
+
+      .slider-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        outline: none;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+      }
+
+      .slider-btn:hover {
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .slide {
+          flex: 0 0 100%; /* Show 1 image on smaller screens */
+          max-width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="dark-veil" aria-hidden="true"></div>
@@ -24,7 +87,7 @@
         <a href="#index" class="logo" aria-label="홈으로">PORTFOLIO</a>
         <ul class="nav-links">
           <li><a href="#information">Preview</a></li>
-          <li><a href="#operator">Projects</a></li>
+          <li><a href="#onsemiro">Onsemiro</a></li>
           <li><a href="#world">Worldview</a></li>
           <li><a href="#media">Media</a></li>
           <li><a href="#more">More</a></li>
@@ -180,30 +243,29 @@
       </section>
 
       <section
-      id="information"
-      class="full-page-section dark-bg"
-      aria-label="소개"
-    >
-    <div class="video-background-wrapper">
-      <iframe
-        id="infoVideoDay"
-        class="section-bg-video bg-video is-active"
-        src="https://www.youtube.com/embed/Ieft0mUOElo?autoplay=1&mute=1&loop=1&playlist=Ieft0mUOElo"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        aria-hidden="true"
-      ></iframe>
-      <iframe
-        id="infoVideoNight"
-        class="section-bg-video bg-video"
-        src="https://www.youtube.com/embed/ZpRuNjeJ7Rs?autoplay=1&mute=1&loop=1&playlist=ZpRuNjeJ7Rs"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        aria-hidden="true"
-      ></iframe>
-      </div>
+        id="information"
+        class="full-page-section dark-bg"
+        aria-label="소개"
+      >
+        <div class="video-background-wrapper">
+          <iframe
+            id="infoVideoDay"
+            class="section-bg-video bg-video is-active"
+            src="https://www.youtube.com/embed/Ieft0mUOElo?autoplay=1&mute=1&loop=1&playlist=Ieft0mUOElo"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            aria-hidden="true"
+          ></iframe>
+          <iframe
+            id="infoVideoNight"
+            class="section-bg-video bg-video"
+            src="https://www.youtube.com/embed/ZpRuNjeJ7Rs?autoplay=1&mute=1&loop=1&playlist=ZpRuNjeJ7Rs"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            aria-hidden="true"
+          ></iframe>
         </div>
         <div class="section-content fade-in-up">
           <h2>테라의 기원</h2>
@@ -216,82 +278,88 @@
       </section>
 
       <section
-        id="operator"
-        class="full-page-section light-bg"
-        aria-label="오퍼레이터"
+        id="onsemiro"
+        class="full-page-section"
+        aria-label="온새미로"
+        style="position: relative; overflow: hidden"
       >
-        <div class="section-content">
-          <h2 class="fade-in-up">로도스 아일랜드의 오퍼레이터</h2>
-          <p class="fade-in-up">
-            리더인 당신은 다양한 오퍼레이터를 지휘하게 됩니다. 캐러셀을 넘겨
-            정보를 확인하세요.
+        <div
+          class="video-background-wrapper"
+          style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+          "
+        >
+          <iframe
+            src="https://www.youtube.com/embed/5d7GybjEkLU?autoplay=1&mute=1&loop=1&playlist=5d7GybjEkLU&controls=0"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            title="Onsemiro 배경 영상"
+            style="
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              min-width: 100%;
+              min-height: 100%;
+              width: 177.77vh;
+              height: 56.25vw;
+            "
+          ></iframe>
+          <div
+            class="video-overlay"
+            style="
+              background-color: rgba(0, 0, 0, 0.4);
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+            "
+          ></div>
+        </div>
+        <div class="section-content" style="position: relative; z-index: 1">
+          <h2 class="fade-in-up" style="color: white">Onsemiro</h2>
+          <p class="fade-in-up" style="color: white">
+            진행했던 패키징 디자인 시안입니다.
           </p>
-          <div class="carousel fade-in-up" aria-roledescription="carousel">
-            <div class="carousel-track" id="opTrack">
-              <article class="op-card" aria-label="아미야">
-                <img
-                  loading="lazy"
-                  src="https://arknights.kr/assets/images/operators/char_002_amiya_1.png"
-                  alt="아미야"
-                />
-                <div class="op-body">
-                  <h3>아미야</h3>
-                  <div class="op-meta">캐스터 · 쿠로사와 토모요</div>
-                  <p>로도스의 리더.</p>
-                </div>
-              </article>
-              <article class="op-card" aria-label="켈시">
-                <img
-                  loading="lazy"
-                  src="https://arknights.kr/assets/images/operators/char_285_medic2_1.png"
-                  alt="켈시"
-                />
-                <div class="op-body">
-                  <h3>켈시</h3>
-                  <div class="op-meta">메딕 · 히카사 요코</div>
-                  <p>의료 부문 총책임자.</p>
-                </div>
-              </article>
-              <article class="op-card" aria-label="텍사스">
-                <img
-                  loading="lazy"
-                  src="https://arknights.kr/assets/images/operators/char_102_texas_1.png"
-                  alt="텍사스"
-                />
-                <div class="op-body">
-                  <h3>텍사스</h3>
-                  <div class="op-meta">바이퍼 · 타네자키 아츠미</div>
-                  <p>신뢰받는 현장 지휘.</p>
-                </div>
-              </article>
-              <article class="op-card" aria-label="엑시아">
-                <img
-                  loading="lazy"
-                  src="https://images.prts.wiki/6/6f/Char_103_angel_1.png"
-                  alt="엑시아"
-                />
-                <div class="op-body">
-                  <h3>엑시아</h3>
-                  <div class="op-meta">스나이퍼 · 사쿠라 아야네</div>
-                  <p>에이스 저격수.</p>
-                </div>
-              </article>
-            </div>
-            <div class="carousel-nav" aria-hidden="false">
-              <button
-                type="button"
-                class="carousel-btn"
-                id="opPrev"
-                aria-label="이전"
-              ></button
-              ><button
-                type="button"
-                class="carousel-btn"
-                id="opNext"
-                aria-label="다음"
-              ></button>
-            </div>
+          <div
+            class="packaging-grid fade-in-up"
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 1rem;
+              margin-top: 2rem;
+            "
+          >
+            <img
+              src="img/packaging_classic_front.png"
+              alt="패키징 앞면"
+              style="max-width: 100%; height: auto; border-radius: 8px"
+            />
+            <img
+              src="img/packaging_classic_bottle.png"
+              alt="패키징 뒷면"
+              style="max-width: 100%; height: auto; border-radius: 8px"
+            />
+            <img
+              src="img/packaging_classic_back.png"
+              alt="패키징 용기"
+              style="max-width: 100%; height: auto; border-radius: 8px"
+            />
           </div>
+          <iframe
+            style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px"
+            width="100%"
+            height="450"
+            src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fz1jsczW1nYoqflUh37lJ6q%2F-%25EC%2598%25A8%25EC%2584%25B8%25EB%25AF%25B8%25EB%25A1%259C-%3Fpage-id%3D0%253A1%26node-id%3D23-3%26viewport%3D11275%252C940%252C0.24%26t%3DHYX1ajgBFtaVpXbz-1%26scaling%3Dcontain%26content-scaling%3Dfixed"
+            allowfullscreen
+          >
+          </iframe>
         </div>
       </section>
 
