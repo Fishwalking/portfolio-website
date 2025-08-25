@@ -220,44 +220,64 @@ document.addEventListener("DOMContentLoaded", function () {
   const prevBtn = sliderContainer.querySelector(".prev-btn");
   const nextBtn = sliderContainer.querySelector(".next-btn");
 
-  let currentIndex = 0; // 0: figma1, 1: images, 2: figma2
-  const offsets = [0];
+  let currentIndex = 0;
+  const slideCount = slides.length;
+  let slidesVisible = 3;
 
-  function calculateOffsets() {
-    offsets.length = 1;
-    let position = 0;
-
-    // 0: Figma 1
-    position += slides[0].offsetWidth + 16;
-    offsets.push(position);
-
-    // 1: Images
-    position += (slides[1].offsetWidth + 16) * 3;
-    offsets.push(position);
-
-    // 2: Figma 2 (small) - 마지막 위치는 계산할 필요 없음
+  function setSlidesVisible() {
+    slidesVisible = window.innerWidth <= 768 ? 1 : 3;
   }
 
-  function moveTo(index) {
+  function moveToSlide(index) {
+    const maxIndex = slideCount - slidesVisible;
     if (index < 0) {
-      index = 2;
-    } else if (index > 2) {
       index = 0;
+    } else if (index > maxIndex) {
+      index = maxIndex;
     }
 
-    slider.style.transform = `translateX(-${offsets[index] || 0}px)`;
+    // 첫 번째 슬라이드는 너비가 다르므로 예외 처리
+    if (currentIndex === 0 && index > 0) {
+      // 첫 슬라이드에서 다음으로 넘어갈 때
+      const firstSlideWidth = slides[0].offsetWidth;
+      slider.style.transform = `translateX(-${firstSlideWidth}px)`;
+    } else if (index === 0) {
+      // 첫 슬라이드로 돌아올 때
+      slider.style.transform = `translateX(0px)`;
+    } else {
+      // 나머지 일반 슬라이드 이동
+      const firstSlideWidth = slides[0].offsetWidth;
+      const regularSlideWidth = slides[1].offsetWidth;
+      const offset = firstSlideWidth + (index - 1) * regularSlideWidth;
+      slider.style.transform = `translateX(-${offset}px)`;
+    }
+
     currentIndex = index;
   }
 
   function initializeSlider() {
-    calculateOffsets();
-    moveTo(currentIndex);
+    setSlidesVisible();
+    // 슬라이더 위치를 현재 인덱스에 맞게 재조정
+    // 페이지 로드 시에는 애니메이션 없이 즉시 이동
+    const originalTransition = slider.style.transition;
+    slider.style.transition = "none";
+    moveToSlide(currentIndex);
+    // 약간의 지연 후 트랜지션 복원
+    setTimeout(() => {
+      slider.style.transition = originalTransition;
+    }, 50);
   }
 
-  nextBtn.addEventListener("click", () => moveTo(currentIndex + 1));
-  prevBtn.addEventListener("click", () => moveTo(currentIndex - 1));
+  nextBtn.addEventListener("click", () => {
+    slider.style.transition = "transform 0.5s ease-in-out";
+    moveToSlide(currentIndex + 1);
+  });
+  prevBtn.addEventListener("click", () => {
+    slider.style.transition = "transform 0.5s ease-in-out";
+    moveToSlide(currentIndex - 1);
+  });
 
-  // Lightbox functionality
+  // --- Lightbox 기능 (수정 없음) ---
   const lightbox = document.getElementById("image-lightbox");
   const lightboxImg = document.getElementById("lightbox-image");
   const lightboxCaption = document.getElementById("lightbox-caption");
@@ -265,13 +285,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   slides.forEach((slide) => {
     if (slide.hasAttribute("data-filename")) {
-      slide.addEventListener("click", () => {
-        const img = slide.querySelector("img");
-        const filename = slide.dataset.filename;
+      slide.addEventListener("click", (e) => {
+        // 슬라이드 이동 중 클릭 방지 (선택 사항)
+        if (slider.style.transform !== "") {
+          const img = slide.querySelector("img");
+          const filename = slide.dataset.filename;
 
-        lightbox.style.display = "flex";
-        lightboxImg.src = img.src;
-        lightboxCaption.textContent = filename;
+          lightbox.style.display = "flex";
+          lightboxImg.src = img.src;
+          lightboxCaption.textContent = filename;
+        }
       });
     }
   });
