@@ -166,92 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   /* ------------------------------
-   * 뉴스 렌더 (데모 데이터)
-   * ------------------------------ */
-  const NEWS_DATA = {
-    latest: [
-      {
-        date: "2025-08-14",
-        tag: "공지",
-        title: "08월 14일 16:00 점검 안내",
-        url: "#",
-      },
-      {
-        date: "2025-08-03",
-        tag: "공지",
-        title: "신규 오퍼레이터 「遥」 이슈 공지",
-        url: "#",
-      },
-      {
-        date: "2025-08-02",
-        tag: "이벤트",
-        title: "창작 공모전 「墟」 개최",
-        url: "#",
-      },
-    ],
-    notice: [
-      {
-        date: "2025-08-14",
-        tag: "공지",
-        title: "08월 14일 16:00 점검 안내",
-        url: "#",
-      },
-    ],
-    event: [
-      {
-        date: "2025-08-02",
-        tag: "이벤트",
-        title: "창작 공모전 「墟」 개최",
-        url: "#",
-      },
-    ],
-    news: [
-      {
-        date: "2025-08-02",
-        tag: "뉴스",
-        title: "BREAKING NEWS 업데이트",
-        url: "#",
-      },
-    ],
-  };
-  const renderNews = (key, targetId) => {
-    const wrap = document.getElementById(targetId);
-    if (!wrap) return;
-    wrap.innerHTML = NEWS_DATA[key]
-      .map(
-        (item) => `
-        <a href="${item.url}" target="_blank" rel="noopener" class="news-card" aria-label="${item.tag} | ${item.date} | ${item.title}">
-            <div class="news-meta">${item.date} · ${item.tag}</div>
-            <div class="news-title">${item.title}</div>
-        </a>
-    `
-      )
-      .join("");
-  };
-  renderNews("latest", "news-latest");
-  renderNews("notice", "news-notice");
-  renderNews("event", "news-event");
-  renderNews("news", "news-news");
-
-  const tablist = document.querySelector('[role="tablist"]');
-  if (tablist) {
-    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
-    const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
-
-    tablist.addEventListener("click", (e) => {
-      const clickedTab = e.target.closest('[role="tab"]');
-      if (!clickedTab) return;
-
-      tabs.forEach((tab) => tab.setAttribute("aria-selected", "false"));
-      clickedTab.setAttribute("aria-selected", "true");
-
-      panels.forEach((panel) => {
-        panel.hidden = panel.id !== clickedTab.getAttribute("aria-controls");
-      });
-    });
-  }
-
-  /* ------------------------------
    * 캐러셀 (무한 루프 적용)
    * ------------------------------ */
   const track = document.getElementById("opTrack");
@@ -281,18 +195,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const updatePosition = (withTransition = true) => {
-      isMoving = true;
-      track.style.transition = withTransition ? "transform 0.6s ease" : "none";
+      if (!withTransition) {
+        track.style.transition = "none";
+      } else {
+        track.style.transition = "transform 0.6s ease";
+      }
       const cardWidth = getCardWidth();
       track.style.transform = `translateX(-${(opIndex + 1) * cardWidth}px)`;
-
-      if (withTransition) {
-        setTimeout(() => {
-          isMoving = false;
-        }, 600);
-      } else {
-        isMoving = false;
-      }
     };
 
     // 초기 위치 설정
@@ -300,6 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     opNext.addEventListener("click", () => {
       if (isMoving) return;
+      isMoving = true;
+
       opIndex++;
       updatePosition();
 
@@ -307,12 +218,19 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           opIndex = 0;
           updatePosition(false);
+          isMoving = false;
+        }, 600);
+      } else {
+        setTimeout(() => {
+          isMoving = false;
         }, 600);
       }
     });
 
     opPrev.addEventListener("click", () => {
       if (isMoving) return;
+      isMoving = true;
+
       opIndex--;
       updatePosition();
 
@@ -320,6 +238,11 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           opIndex = cardCount - 1;
           updatePosition(false);
+          isMoving = false;
+        }, 600);
+      } else {
+        setTimeout(() => {
+          isMoving = false;
         }, 600);
       }
     });
@@ -391,7 +314,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const syncMusicUI = () => {
       if (!musicControls) return;
       const playing = !bgm.paused;
-      musicToggleBtn.textContent = playing ? "⏸️" : "🎵";
+      // ▼ [수정] 재생 버튼 아이콘 변경
+      musicToggleBtn.textContent = playing ? "⏸️" : "▶️";
       musicToggleBtn.setAttribute("aria-pressed", String(playing));
       musicControls.classList.toggle("playing", playing);
     };
