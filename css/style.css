@@ -1,14 +1,19 @@
+/* --- ▼ [수정] 전체 컬러 테마 변경 --- */
 :root {
-  --bg: #121212;
-  --bg-1: #1a1a1a;
-  --bg-2: #2c2c2c;
-  --text: #f5f5f5;
-  --muted: #bdbdbd;
-  --accent: #ffcc00;
+  --bg: #0a0a0a; /* 어두운 배경 */
+  --bg-1: #0a0a0a;
+  --bg-2: #161616;
+  --text: #e0e0e0; /* 기본 텍스트 */
+  --muted: #a0a0a0;
+  --accent: #cccccc; /* 포인트 컬러 (밝은 회색) */
   --radius: 12px;
-  --shadow: 0 8px 25px rgba(255, 204, 0, 0.3);
+  --shadow: 0 8px 25px rgba(204, 204, 204, 0.2);
   --white: #fff;
+  --chip-bg: rgba(255, 255, 255, 0.06);
+  --chip-bd: rgba(255, 255, 255, 0.16);
 }
+/* --- ▲ [수정] 전체 컬러 테마 변경 --- */
+
 html,
 body {
   margin: 0;
@@ -78,18 +83,16 @@ a {
 
 /* Backgrounds */
 .light-bg {
-  background-color: #f0f2f5;
-  color: #333;
+  background-color: #161616; /* 밝은 회색 배경 */
+  color: #f5f5f5; /* 밝은 배경 위의 텍스트 */
 }
 .dark-bg {
-  background-color: #18191a;
+  background-color: #0a0a0a; /* 짙은 회색 배경 */
   color: var(--text);
 }
 #index {
   background-color: transparent;
 }
-
-/* 페이지 전체 배경으로 고정 */
 
 .video-background-wrapper {
   position: absolute;
@@ -101,7 +104,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(8px) brightness(0.7);
+  filter: blur(8px) brightness(0.6);
 }
 #information .section-bg-video {
   opacity: 0;
@@ -112,8 +115,7 @@ a {
 }
 #information::before {
   display: none;
-} /* 글자 블러 유발하던 요소 제거 */
-/* --- ▲ 배경 문제 해결 끝 --- */
+}
 
 /* Header & Footer */
 .header {
@@ -121,7 +123,7 @@ a {
   inset: 0 auto auto 0;
   width: 100%;
   z-index: 100;
-  background: rgba(18, 18, 18, 0.75);
+  background: rgba(10, 10, 10, 0.75); /* 짙은 회색 배경 */
   backdrop-filter: blur(6px);
 }
 .navbar {
@@ -148,7 +150,7 @@ a {
 }
 .light-bg .nav-links a:hover,
 .light-bg .nav-links a[aria-current="page"] {
-  color: #c8a000;
+  color: #fff;
 }
 .music-controls {
   display: flex;
@@ -175,7 +177,7 @@ a {
 .footer {
   position: fixed;
   inset: auto 0 0 0;
-  background: #0e0e0e;
+  background: #000;
   color: #888;
   font-size: 0.85rem;
   text-align: center;
@@ -183,22 +185,23 @@ a {
   z-index: 100;
 }
 
-/* --- ▼ [수정] 새로운 프로필 섹션 스타일 --- */
+/* Profile Section */
 .profile-card {
   width: 100%;
   max-width: 1200px;
   height: 100%;
-  max-height: 700px; /* 최대 높이 설정 */
+  max-height: 700px;
   display: flex;
   flex-direction: column;
-  background: rgba(18, 18, 18, 0.7);
+  background: rgba(10, 10, 10, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius);
   backdrop-filter: blur(10px);
-  overflow: hidden; /* 내부 스크롤을 위해 overflow 설정 */
+  overflow: hidden;
 }
 .profile-main {
   display: flex;
+  align-items: center;
   gap: 3rem;
   padding: 3rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -219,7 +222,7 @@ a {
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid var(--accent);
-  box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+  box-shadow: 0 0 25px rgba(204, 204, 204, 0.2);
 }
 .profile-name {
   font-size: 2.5rem;
@@ -231,32 +234,56 @@ a {
   font-size: 1rem;
   font-weight: 700;
   color: var(--accent);
-  margin: 0.25rem 0 1.5rem;
+  margin: 0.25rem 0 0;
   letter-spacing: 1.5px;
 }
-.profile-social-links {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-}
-.profile-social-links a {
-  font-weight: 700;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-.profile-social-links a:hover {
-  color: var(--accent);
-}
 
-.profile-about {
-  text-align: left;
+.profile-content {
   flex-grow: 1;
 }
 
+.profile-about,
+.profile-skills {
+  text-align: left;
+}
+
+.profile-skills {
+  margin-top: 2rem;
+}
+
+/* Skills Icon Grid */
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.skill-item img {
+  width: 48px;
+  height: 48px;
+  transition: transform 0.2s ease;
+  filter: grayscale(30%); /* 아이콘 톤 다운 */
+}
+
+.skill-item:hover img {
+  transform: scale(1.1);
+  filter: grayscale(0%);
+}
+
 .profile-body {
-  flex-grow: 1; /* 남은 공간을 모두 차지하도록 설정 */
-  overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤 생성 */
+  flex-grow: 1;
+  overflow-y: auto;
   padding: 2rem 3rem;
   display: flex;
   flex-direction: column;
@@ -280,26 +307,6 @@ a {
   margin: 0;
 }
 
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 1.5rem;
-}
-.skill-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9rem;
-}
-.skill-item img {
-  width: 48px;
-  height: 48px;
-  transition: transform 0.2s ease;
-}
-.skill-item:hover img {
-  transform: scale(1.1);
-}
 .experience-list {
   list-style: none;
   padding: 0;
@@ -312,7 +319,6 @@ a {
 .experience-list li:last-child {
   border-bottom: none;
 }
-/* --- ▲ 프로필 섹션 스타일 끝 --- */
 
 /* Components */
 .carousel {
@@ -327,7 +333,7 @@ a {
   min-width: clamp(240px, 80vw, 360px);
   max-width: clamp(240px, 80vw, 360px);
   margin: 0 12px;
-  background: #333;
+  background: #222;
   border-radius: var(--radius);
   overflow: hidden;
   text-align: left;
@@ -343,7 +349,8 @@ a {
   padding: 1rem;
 }
 .light-bg .op-card {
-  background: #fff;
+  background: #333;
+  color: #e0e0e0;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 .carousel-nav {
@@ -379,7 +386,7 @@ a {
 }
 .lore-card {
   background: var(--bg-1);
-  border: 1px solid var(--border-color);
+  border: 1px solid #333;
   padding: 1.5rem;
   border-radius: var(--radius);
   font-weight: 700;
@@ -444,15 +451,14 @@ a {
   .profile-main {
     flex-direction: column;
     align-items: center;
-  }
-  .profile-header {
     text-align: center;
   }
-  .profile-social-links {
+  .profile-about,
+  .profile-skills {
+    text-align: center;
+  }
+  .skill-grid {
     justify-content: center;
-  }
-  .profile-about {
-    text-align: center;
   }
 }
 @media (max-width: 768px) {
@@ -465,8 +471,8 @@ a {
     height: auto;
     max-height: 80vh;
   }
-  .profile-header {
-    gap: 1.5rem;
+  .profile-main {
+    padding: 1.5rem;
   }
   .profile-picture {
     width: 120px;
@@ -486,208 +492,5 @@ a {
   .op-card {
     min-width: 78vw;
     max-width: 78vw;
-  }
-}
-/* style.css : #index 전용 레이아웃 + 타이포 + 스킬(이미지 카드) 최적화 */
-
-/* 간단 토큰(프로젝트 테마에 맞게 조정 가능) */
-:root {
-  --bg: #0b0b11;
-  --text: rgba(255, 255, 255, 0.92);
-  --text-dim: rgba(255, 255, 255, 0.8);
-  --accent: #f6c50b; /* 노란 포인트 */
-  --chip-bg: rgba(255, 255, 255, 0.06);
-  --chip-bd: rgba(255, 255, 255, 0.16);
-  --card-bg: rgba(255, 255, 255, 0.05);
-  --card-bd: rgba(255, 255, 255, 0.14);
-  --glow-blue: rgba(59, 130, 246, 0.22);
-}
-* {
-  box-sizing: border-box;
-}
-html,
-body {
-  height: 100%;
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-}
-
-/* 헤더/내브는 기존 규칙 유지(필요 시 생략 가능) */
-
-/* =======================
-   #index — 2열 그리드
-   왼쪽: 사진 → 이름 → 직함
-   오른쪽: ABOUT → SKILLS(이미지 그리드)
-   ======================= */
-#index {
-  --gap-y: 0.6rem; /* 동일 세로 리듬 */
-  --col-gap: 2rem; /* 좌우 칼럼 간격 */
-  --pad-x: 2.25rem;
-  --pad-y: 2rem;
-}
-#index .profile-card {
-  max-height: 720px;
-}
-#index .profile-main {
-  display: grid;
-  grid-template-columns: minmax(220px, 260px) 1fr; /* 왼쪽 고정폭 + 오른쪽 가변 */
-  grid-auto-rows: auto;
-  column-gap: var(--col-gap);
-  row-gap: 0; /* 요소 마진으로 리듬 통일 */
-  padding: var(--pad-y) var(--pad-x);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  align-items: start;
-}
-
-/* 그리드 배치: 왼쪽 3행(사진,이름,직함) / 오른쪽 2행(About,Skills) */
-#index .profile-picture-wrapper {
-  grid-column: 1;
-  grid-row: 1;
-  margin: 0 0 0.35rem 0;
-}
-#index .profile-name {
-  grid-column: 1;
-  grid-row: 2;
-  margin: 0;
-  line-height: 1.08;
-}
-#index .profile-title {
-  grid-column: 1;
-  grid-row: 3;
-  margin: 0;
-}
-
-/* 오른쪽 */
-#index .profile-about {
-  grid-column: 2;
-  grid-row: 1;
-  margin: 0 0 var(--gap-y) 0;
-  padding: 0;
-}
-#index .profile-skills {
-  grid-column: 2;
-  grid-row: 2;
-  margin: 0;
-  padding: 0;
-}
-
-/* 이미지(왼쪽) — 노란 링 + 글로우 */
-#index .profile-picture-wrapper img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 999px;
-  box-shadow: 0 0 0 4px var(--accent),
-    0 0 24px color-mix(in oklab, var(--accent) 70%, transparent),
-    0 0 64px color-mix(in oklab, var(--accent) 40%, transparent);
-}
-
-/* 이름, 직함(사진 아래) */
-#index .profile-name {
-  font-size: clamp(28px, 3.6vw, 48px);
-  text-align: center; /* 사진 아래 중앙 정렬 */
-}
-#index .profile-title {
-  display: inline-block;
-  justify-self: center; /* 그리드 셀 내 중앙 */
-  padding: 0.45rem 0.8rem; /* 위/아래 대칭 패딩 */
-  margin-top: 0.4rem;
-  color: var(--accent);
-  font-weight: 800;
-  font-size: clamp(18px, 2.6vw, 28px);
-  letter-spacing: 0.02em;
-  line-height: 1;
-  text-shadow: 0 0 6px rgba(246, 197, 11, 0.45),
-    0 0 18px rgba(246, 197, 11, 0.25), 2px 3px 0 rgba(0, 0, 0, 0.35);
-}
-/* 이전에 사용한 파란 보더는 비활성화 */
-#index .profile-title::after {
-  content: none !important;
-}
-
-/* 오른쪽 타이틀/본문 */
-#index .profile-section-title {
-  margin: 0 0 var(--gap-y) 0;
-  font-size: clamp(16px, 1.6vw, 20px);
-  letter-spacing: 0.04em;
-  color: var(--accent);
-}
-#index .profile-bio {
-  margin: 0 0 calc(var(--gap-y) + 0.2rem) 0;
-  line-height: 1.6;
-  color: var(--text-dim);
-}
-
-/* SKILLS — 이미지 카드 그리드 */
-#index .skill-grid {
-  --skill-size: 84px; /* 썸네일 정사각 크기 */
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.9rem 0.9rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-#index .skill-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  padding: 0.9rem 0.8rem;
-  background: var(--card-bg);
-  border: 1px solid var(--card-bd);
-  border-radius: 14px;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 12px 28px -16px var(--glow-blue);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-  backdrop-filter: blur(2px);
-}
-#index .skill-card:hover {
-  transform: translateY(-2px);
-  background: color-mix(in oklab, var(--card-bg) 85%, white 15%);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 18px 36px -16px var(--glow-blue);
-}
-#index .skill-thumb {
-  width: var(--skill-size);
-  height: var(--skill-size);
-  object-fit: contain;
-  object-position: center;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
-  user-select: none;
-  -webkit-user-drag: none;
-}
-#index .skill-card figcaption {
-  font-size: clamp(12px, 1.2vw, 14px);
-  color: var(--text);
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* 반응형: 모바일은 세로 쌓기 */
-@media (max-width: 720px) {
-  #index {
-    --col-gap: 0;
-    --pad-x: 1rem;
-    --pad-y: 1.25rem;
-    --gap-y: 0.5rem;
-  }
-  #index .profile-main {
-    grid-template-columns: 1fr;
-  }
-  #index .profile-picture-wrapper {
-    grid-column: 1;
-    grid-row: auto;
-    margin: 0 0 0.4rem 0;
-  }
-  #index .profile-name {
-    text-align: center;
-  }
-  #index .profile-title {
-    justify-self: center;
   }
 }
