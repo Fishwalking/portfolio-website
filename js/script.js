@@ -355,6 +355,8 @@ document.addEventListener("DOMContentLoaded", () => {
     syncMusicUI();
   }
 
+  initializeOnsemiroSection();
+
   /* ==============================================================
    * INFORMATION 섹션 배경 비디오 (아침/밤 디졸브)
    * ============================================================== */
