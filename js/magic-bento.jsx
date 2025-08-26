@@ -1,26 +1,25 @@
 const { useState, useMemo, useEffect } = React;
 
+// 각 아이템의 크기(size)를 명시적으로 지정합니다.
 const initialGridData = [
-  // === 영상 데이터 시작 ===
   {
     id: 1,
     type: "video",
     videoUrl: "https://www.youtube.com/embed/tViL1sLDWIA",
-    size: "medium",
+    size: "medium", // 비디오 카드 크기
   },
   {
     id: 2,
     type: "video",
     videoUrl: "https://www.youtube.com/embed/rBSmqB4-ZF4",
-    size: "medium",
+    size: "medium", // 비디오 카드 크기
   },
   {
     id: 3,
     type: "video",
     videoUrl: "https://www.youtube.com/embed/qqBSvR9t_J4",
-    size: "medium",
+    size: "medium", // 비디오 카드 크기
   },
-  // === 영상 데이터 끝 ===
   {
     id: 4,
     category: "Faction",
@@ -40,7 +39,7 @@ const initialGridData = [
   {
     id: 6,
     category: "Concept",
-    title: "오리지늄 아츠 (Originium Arts)",
+    title: "오리지늄 아츠",
     description:
       "오리지늄을 매개로 발동하는, 일반적으로 '마법'이라 불리는 능력.",
     size: "medium",
@@ -51,14 +50,14 @@ const initialGridData = [
     category: "Lore",
     title: "광석병 (Oripathy)",
     description:
-      "체내 오리지늄 결정화로 발병하며, 사망 시 주변을 광석으로 오염시키는 불치병.",
+      "체내 오리지늄 결정화로 발병하며, 사망 시 주변을 오염시키는 불치병.",
     size: "medium",
     url: "https://namu.wiki/w/%EA%B4%91%EC%84%9D%EB%B3%91",
   },
   {
     id: 8,
     category: "Concept",
-    title: "이동 도시 (Nomadic City)",
+    title: "이동 도시",
     description:
       "끊임없이 발생하는 '천재(Catastrophe)'를 피해 이동하는 거대 도시.",
     size: "medium",
@@ -84,55 +83,52 @@ function BentoCard({
   onMouseEnter,
   onMouseLeave,
 }) {
-  const TagName = item.url && !isExpanded ? "a" : "div";
-  const linkProps =
-    TagName === "a"
-      ? { href: item.url, target: "_blank", rel: "noopener noreferrer" }
-      : {};
+  const isLink = item.url && !isExpanded && item.type !== "video";
+  const TagName = isLink ? "a" : "div";
+  const linkProps = isLink
+    ? { href: item.url, target: "_blank", rel: "noopener noreferrer" }
+    : {};
 
-  let content;
-
-  // 영상 타입 카드 처리
-  if (item.type === "video") {
-    content = (
-      <div className="video-container">
-        <iframe
-          src={item.videoUrl}
-          title="YouTube video player"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-      </div>
-    );
-  } else if (isExpanded) {
-    // 확장된 카드 처리
-    content = (
-      <div className="card-content-expanded">
-        <h3>{item.title}</h3>
-        <p>{item.description}</p>
-        {item.url && (
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="card-link"
-          >
-            더 알아보기
-          </a>
-        )}
-      </div>
-    );
-  } else {
-    // 기본 카드 처리
-    content = (
+  const getCardContent = () => {
+    if (item.type === "video") {
+      return (
+        <div className="video-container">
+          <iframe
+            src={item.videoUrl}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+      );
+    }
+    if (isExpanded) {
+      return (
+        <div className="card-content-expanded">
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          {item.url && (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card-link"
+            >
+              더 알아보기
+            </a>
+          )}
+        </div>
+      );
+    }
+    return (
       <div className="card-content-collapsed">
         <span className="card-category">{item.category}</span>
         <h3>{item.title}</h3>
         <p className="card-description">{item.description}</p>
       </div>
     );
-  }
+  };
 
   return (
     <TagName
@@ -146,7 +142,7 @@ function BentoCard({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      {content}
+      {getCardContent()}
     </TagName>
   );
 }
@@ -156,12 +152,9 @@ function MagicBentoGrid() {
   const [hoveredItemId, setHoveredItemId] = useState(null);
 
   const handleCardClick = (item) => {
-    if (item.type === "video") return; // 영상 카드는 확장되지 않도록 설정
-    if (expandedItem && expandedItem.id === item.id) {
-      setExpandedItem(null);
-    } else {
-      setExpandedItem(item);
-    }
+    if (item.type === "video") return; // 영상 카드는 확장/축소되지 않도록 설정
+
+    setExpandedItem((prev) => (prev && prev.id === item.id ? null : item));
   };
 
   const handleMouseEnter = (item) => {
@@ -172,6 +165,7 @@ function MagicBentoGrid() {
     setHoveredItemId(null);
   };
 
+  // 레이아웃을 계산하는 핵심 로직을 복원합니다.
   const gridTemplate = useMemo(() => {
     if (!expandedItem) {
       return {
@@ -180,20 +174,31 @@ function MagicBentoGrid() {
       };
     }
 
+    const gridItems = Array(9)
+      .fill(null)
+      .map((_, i) => ({
+        id: initialGridData[i]?.id || i + 1,
+        size: initialGridData[i]?.size || "medium",
+      }));
+
     const expandedIndex = initialGridData.findIndex(
       (item) => item.id === expandedItem.id
     );
-    const numRows = 3;
+
     const numCols = 3;
     const itemRow = Math.floor(expandedIndex / numCols);
-    const itemCol = expandedIndex % numCols;
 
-    const newTemplate = {
-      gridTemplateColumns: `repeat(${numCols}, 1fr)`,
-      gridTemplateRows: `repeat(${numRows}, minmax(150px, auto))`,
+    const rowHeights = [
+      "minmax(150px, auto)",
+      "minmax(150px, auto)",
+      "minmax(150px, auto)",
+    ];
+    rowHeights[itemRow] = "2fr"; // 확장된 아이템의 행 높이를 늘림
+
+    return {
+      gridTemplateColumns: "repeat(3, 1fr)",
+      gridTemplateRows: rowHeights.join(" "),
     };
-
-    return newTemplate;
   }, [expandedItem]);
 
   return (
@@ -206,7 +211,7 @@ function MagicBentoGrid() {
             isExpanded={expandedItem && expandedItem.id === item.id}
             isSelected={expandedItem && expandedItem.id === item.id}
             onClick={handleCardClick}
-            isHovered={hoveredItemId === item.id}
+            isHovered={!expandedItem && hoveredItemId === item.id}
             onMouseEnter={() => handleMouseEnter(item)}
             onMouseLeave={handleMouseLeave}
           />
