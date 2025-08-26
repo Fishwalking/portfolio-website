@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const sections = Array.from(document.querySelectorAll(".full-page-section"));
   const navLinks = document.querySelectorAll(".nav-links a");
   const modalOverlay = document.getElementById("modal-overlay");
+  // ▼▼▼ 상세페이지 팝업 요소를 가져옵니다. ▼▼▼
+  const detailPageModal = document.getElementById("detail-page-modal");
 
   const fadeInElements = sections.map((section) =>
     section.querySelectorAll(".fade-in-up")
@@ -91,13 +93,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (idx !== -1 && idx !== currentIndex) scrollToSection(idx, false);
   });
 
-  const modalOpen = () =>
-    !!modalOverlay && getComputedStyle(modalOverlay).display === "flex";
+  // ▼▼▼ 모든 팝업창이 열려있는지 확인하는 함수로 수정합니다. ▼▼▼
+  const isAnyModalOpen = () => {
+    const isTrailerModalOpen =
+      !!modalOverlay && getComputedStyle(modalOverlay).display !== "none";
+    const isDetailModalOpen =
+      !!detailPageModal && getComputedStyle(detailPageModal).display !== "none";
+    return isTrailerModalOpen || isDetailModalOpen;
+  };
 
   window.addEventListener(
     "wheel",
     (e) => {
-      if (modalOpen() || isScrolling) return;
+      // isAnyModalOpen() 함수를 사용하도록 변경
+      if (isAnyModalOpen() || isScrolling) return;
 
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         if (e.deltaY > 5) {
@@ -111,7 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   window.addEventListener("keydown", (e) => {
-    if (modalOpen()) return;
+    // isAnyModalOpen() 함수를 사용하도록 변경
+    if (isAnyModalOpen()) return;
     if (["ArrowRight", "PageDown"].includes(e.key)) {
       e.preventDefault();
       scrollToSection(currentIndex + 1);
@@ -133,7 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "touchstart",
     (e) => {
-      if (modalOpen()) return;
+      // isAnyModalOpen() 함수를 사용하도록 변경
+      if (isAnyModalOpen()) return;
       const t = e.changedTouches[0];
       touchStartX = t.clientX;
       touchStartY = t.clientY;
@@ -143,7 +154,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "touchend",
     (e) => {
-      if (modalOpen() || touchStartX === null) return;
+      // isAnyModalOpen() 함수를 사용하도록 변경
+      if (isAnyModalOpen() || touchStartX === null) return;
       const t = e.changedTouches[0];
       const dx = t.clientX - touchStartX;
       const dy = t.clientY - touchStartY;
@@ -155,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     { passive: true }
   );
+  // ▲▲▲ 여기까지 스크롤 관련 코드 수정 ▲▲▲
 
   navLinks.forEach((link) =>
     link.addEventListener("click", (e) => {
