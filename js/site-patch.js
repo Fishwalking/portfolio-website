@@ -231,25 +231,16 @@ document.addEventListener("DOMContentLoaded", function () {
       if (targetContent) {
         targetContent.classList.add("active");
       }
-
-      // 탭 변경 시 각 슬라이더 초기화 (currentIndex를 0으로 설정)
-      const sliders = targetContent.querySelectorAll(".photo-slider-container");
-      sliders.forEach((slider) => {
-        const track = slider.querySelector(".photo-slider-track");
-        track.style.transform = `translateX(0px)`;
-        slider.dataset.currentIndex = "0";
-      });
     });
   }
 
-  // --- Photo Slider 기능 ---
+  // --- Photo Slider 기능 (패키징, 컨셉, 상세페이지) ---
   function initializePhotoSlider(sliderContainer) {
+    if (!sliderContainer) return;
     const track = sliderContainer.querySelector(".photo-slider-track");
     const items = track.querySelectorAll(".photo-item");
     const prevBtn = sliderContainer.querySelector(".photo-prev-btn");
     const nextBtn = sliderContainer.querySelector(".photo-next-btn");
-
-    if (!track || !items || !prevBtn || !nextBtn) return;
 
     let currentIndex = 0;
     const totalItems = items.length;
@@ -257,48 +248,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function moveTo(index) {
       const maxIndex = totalItems - itemsVisible;
-      if (index < 0) {
-        index = 0;
-      } else if (index > maxIndex) {
-        index = maxIndex;
-      }
+      if (index < 0) index = 0;
+      else if (index > maxIndex) index = maxIndex;
 
       const itemWidth = sliderContainer.offsetWidth / itemsVisible;
       track.style.transform = `translateX(-${index * itemWidth}px)`;
       currentIndex = index;
-      sliderContainer.dataset.currentIndex = index;
     }
 
     function updateSlider() {
       itemsVisible = window.innerWidth <= 768 ? 2 : 4;
-      moveTo(parseInt(sliderContainer.dataset.currentIndex) || 0);
+      moveTo(currentIndex);
     }
 
     nextBtn.addEventListener("click", () => moveTo(currentIndex + 1));
     prevBtn.addEventListener("click", () => moveTo(currentIndex - 1));
 
     window.addEventListener("resize", updateSlider);
-    updateSlider(); // 초기 실행
-    sliderContainer.dataset.currentIndex = "0"; // 초기 current index 설정
+    updateSlider();
   }
 
-  const packagingSlider = document.querySelector(".packaging-slider");
-  if (packagingSlider) {
-    initializePhotoSlider(packagingSlider);
-  }
+  initializePhotoSlider(document.querySelector(".packaging-slider"));
+  initializePhotoSlider(document.querySelector(".concept-slider"));
+  initializePhotoSlider(document.querySelector(".detail-slider"));
 
-  const conceptSlider = document.querySelector(".concept-slider");
-  if (conceptSlider) {
-    initializePhotoSlider(conceptSlider);
-  }
-
-  // --- Lightbox 기능 ---
+  // --- Lightbox 기능 (패키징, 컨셉 이미지 확대) ---
   const lightbox = document.getElementById("image-lightbox");
   if (lightbox) {
     const lightboxImg = document.getElementById("lightbox-image");
     const lightboxCaption = document.getElementById("lightbox-caption");
-    const closeBtn = document.querySelector(".lightbox-close");
-    const photoItems = document.querySelectorAll(".photo-item");
+    const closeBtn = lightbox.querySelector(".lightbox-close");
+    // 상세페이지 슬라이더를 제외한 슬라이더의 아이템만 선택
+    const photoItems = document.querySelectorAll(
+      ".packaging-slider .photo-item, .concept-slider .photo-item"
+    );
 
     photoItems.forEach((item) => {
       item.addEventListener("click", () => {
@@ -317,8 +300,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     closeBtn.addEventListener("click", closeLightbox);
     lightbox.addEventListener("click", (e) => {
-      if (e.target === lightbox) {
+      // 배경 클릭 시 닫기
+      if (e.target.id === "image-lightbox") {
         closeLightbox();
+      }
+    });
+  }
+
+  // --- Detail Page Modal 기능 (상세페이지 스크롤) ---
+  const detailModal = document.getElementById("detail-page-modal");
+  if (detailModal) {
+    const previewSlider = document.querySelector(".detail-slider");
+    const closeBtn = detailModal.querySelector(".lightbox-close");
+
+    function openDetailModal() {
+      detailModal.style.display = "flex";
+    }
+
+    function closeDetailModal() {
+      detailModal.style.display = "none";
+    }
+
+    // 상세페이지 슬라이더 전체 영역 클릭 시 팝업 열기
+    if (previewSlider) {
+      previewSlider.addEventListener("click", openDetailModal);
+    }
+    closeBtn.addEventListener("click", closeDetailModal);
+    // 배경 클릭 시 닫기
+    detailModal.addEventListener("click", (e) => {
+      if (e.target.id === "detail-page-modal") {
+        closeDetailModal();
       }
     });
   }
