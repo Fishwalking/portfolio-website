@@ -279,46 +279,99 @@
           <div class="onsemiro-tab-container">
             <nav class="tab-nav">
               <button class="tab-btn active" data-target="plan">기획서</button>
-              <button class="tab-btn" data-target="packaging">패키징</button>
-              <button class="tab-btn" data-target="concept">컨셉</button>
               <button class="tab-btn" data-target="videos">영상</button>
               <button class="tab-btn" data-target="details">상세페이지</button>
+              <button class="tab-btn" data-target="packaging">패키징</button>
+              <button class="tab-btn" data-target="concept">컨셉</button>
             </nav>
 
             <div class="tab-content-container">
               <div id="plan" class="tab-content active">
-                <iframe src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fz1jsczW1nYoqflUh37lJ6q%2F-%25EC%2598%25A8%25EC%2584%25B8%25EB%25AF%25B8%25EB%25A1%259C-%3Fpage-id%3D0%253A1%26node-id%3D23-3%26viewport%3D11275%252C940%252C0.24%26t%3DHYX1ajgBFtaVpXbz-1%26scaling%3Dcontain%26content-scaling%3Dfixed" allowfullscreen></iframe>
-              </div>
-
-              <div id="packaging" class="tab-content">
-                <div class="photo-grid">
-                  <div class="photo-item" data-filename="packaging_classic_front.png"><img src="img/packaging_classic_front.png" alt="패키징 앞면"></div>
-                  <div class="photo-item" data-filename="packaging_classic_back.png"><img src="img/packaging_classic_back.png" alt="패키징 뒷면"></div>
-                  <div class="photo-item" data-filename="packaging_classic_bottle.png"><img src="img/packaging_classic_bottle.png" alt="패키징 용기"></div>
-                </div>
-              </div>
-
-              <div id="concept" class="tab-content">
-                <div class="photo-grid">
-                  <div class="photo-item" data-filename="Concept shot_1.png"><img src="img/Concept shot_1.png" alt="콘셉트샷 1"></div>
-                  <div class="photo-item" data-filename="Concept shot_2.png"><img src="img/Concept shot_2.png" alt="콘셉트샷 2"></div>
-                  <div class="photo-item" data-filename="Concept shot_3.png"><img src="img/Concept shot_3.png" alt="콘셉트샷 3"></div>
-                  <div class="photo-item" data-filename="Concept shot_4.png"><img src="img/Concept shot_4.png" alt="콘셉트샷 4"></div>
-                  <div class="photo-item" data-filename="Concept shot_5.png"><img src="img/Concept shot_5.png" alt="콘셉트샷 5"></div>
-                </div>
+                <iframe
+                  src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fz1jsczW1nYoqflUh37lJ6q%2F-%25EC%2598%25A8%25EC%2584%25B8%25EB%25AF%25B8%25EB%25A1%259C-%3Fpage-id%3D0%253A1%26node-id%3D23-3%26viewport%3D11275%252C940%252C0.24%26t%3DHYX1ajgBFtaVpXbz-1%26scaling%3Dcontain%26content-scaling%3Dfixed"
+                  allowfullscreen
+                ></iframe>
               </div>
 
               <div id="videos" class="tab-content">
                 <div class="video-grid">
-                  <iframe src="https://www.youtube.com/embed/NQULd4sUY_M" title="Concept Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                  <iframe
+                    src="https://www.youtube.com/embed/NQULd4sUY_M"
+                    title="Concept Video"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
                 </div>
               </div>
 
               <div id="details" class="tab-content">
-                <iframe src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2Fz1jsczW1nYoqflUh37lJ6q%2F-%25EC%2598%25A8%25EC%2584%25B8%25EB%25AF%25B8%25EB%25A1%259C-%3Fnode-id%3D101-37%26t%3DzMSLDNma6e5IRGg1-1" allowfullscreen></iframe>
+                <iframe
+                  src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2Fz1jsczW1nYoqflUh37lJ6q%2F-%25EC%2598%25A8%25EC%2584%25B8%25EB%25AF%25B8%25EB%25A1%259C-%3Fnode-id%3D101-37%26t%3DzMSLDNma6e5IRGg1-1"
+                  allowfullscreen
+                ></iframe>
+              </div>
+
+              <div id="packaging" class="tab-content">
+                <div class="photo-slider-container packaging-slider">
+                  <div class="photo-slider-track">
+                    <div
+                      class="photo-item"
+                      data-filename="packaging_classic_front.png"
+                    >
+                      <img
+                        src="img/packaging_classic_front.png"
+                        alt="패키징 앞면"
+                      />
+                    </div>
+                    <div
+                      class="photo-item"
+                      data-filename="packaging_classic_back.png"
+                    >
+                      <img
+                        src="img/packaging_classic_back.png"
+                        alt="패키징 뒷면"
+                      />
+                    </div>
+                    <div
+                      class="photo-item"
+                      data-filename="packaging_classic_bottle.png"
+                    >
+                      <img
+                        src="img/packaging_classic_bottle.png"
+                        alt="패키징 용기"
+                      />
+                    </div>
+                  </div>
+                  <button class="slider-btn photo-prev-btn">＜</button>
+                  <button class="slider-btn photo-next-btn">＞</button>
+                </div>
+              </div>
+
+              <div id="concept" class="tab-content">
+                <div class="photo-slider-container concept-slider">
+                  <div class="photo-slider-track">
+                    <div class="photo-item" data-filename="Concept shot_1.png">
+                      <img src="img/Concept shot_1.png" alt="콘셉트샷 1" />
+                    </div>
+                    <div class="photo-item" data-filename="Concept shot_2.png">
+                      <img src="img/Concept shot_2.png" alt="콘셉트샷 2" />
+                    </div>
+                    <div class="photo-item" data-filename="Concept shot_3.png">
+                      <img src="img/Concept shot_3.png" alt="콘셉트샷 3" />
+                    </div>
+                    <div class="photo-item" data-filename="Concept shot_4.png">
+                      <img src="img/Concept shot_4.png" alt="콘셉트샷 4" />
+                    </div>
+                    <div class="photo-item" data-filename="Concept shot_5.png">
+                      <img src="img/Concept shot_5.png" alt="콘셉트샷 5" />
+                    </div>
+                  </div>
+                  <button class="slider-btn photo-prev-btn">＜</button>
+                  <button class="slider-btn photo-next-btn">＞</button>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
       </section>

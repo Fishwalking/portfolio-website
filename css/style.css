@@ -535,7 +535,7 @@ a {
 
 .tab-nav {
   display: flex;
-  flex-wrap: wrap; /* 모바일에서 탭 버튼이 줄바꿈 되도록 설정 */
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 20px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
@@ -579,29 +579,64 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Photo Grid Styles */
-.photo-grid {
-  display: grid;
-  /* 한 줄에 4개의 이미지가 보이도록 설정, 창이 작아지면 자동으로 개수 조절 */
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+/* --- Photo Slider Styles --- */
+.photo-slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.photo-slider-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
 }
 
 .photo-item {
+  flex: 0 0 25%; /* 4개씩 보이도록 너비 설정 */
+  box-sizing: border-box;
+  padding: 0 8px;
   cursor: pointer;
-  overflow: hidden;
-  border-radius: 8px;
 }
 
 .photo-item img {
   width: 100%;
   aspect-ratio: 9 / 16;
   object-fit: cover;
+  border-radius: 8px;
   transition: transform 0.3s ease;
 }
 
 .photo-item:hover img {
   transform: scale(1.05);
+}
+
+.photo-slider-container .slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 1.5rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.photo-slider-container .slider-btn:hover {
+  opacity: 1;
+}
+
+.photo-slider-container.packaging-slider .photo-prev-btn,
+.photo-slider-container.concept-slider .photo-prev-btn {
+  left: 10px;
+}
+
+.photo-slider-container.packaging-slider .photo-next-btn,
+.photo-slider-container.concept-slider .photo-next-btn {
+  right: 10px;
 }
 
 /* Video Tab Styles */
@@ -664,5 +699,18 @@ a {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .photo-item {
+    flex: 0 0 50%; /* 모바일에서는 2개씩 보이도록 설정 */
+  }
+  .photo-slider-container .photo-prev-btn {
+    left: 0;
+  }
+  .photo-slider-container .photo-next-btn {
+    right: 0;
   }
 }

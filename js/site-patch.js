@@ -223,17 +223,73 @@ document.addEventListener("DOMContentLoaded", function () {
       const clickedBtn = e.target.closest(".tab-btn");
       if (!clickedBtn) return;
 
-      // 모든 버튼과 콘텐츠에서 active 클래스 제거
       tabBtns.forEach((btn) => btn.classList.remove("active"));
       tabContents.forEach((content) => content.classList.remove("active"));
 
-      // 클릭된 버튼과 해당하는 콘텐츠에 active 클래스 추가
       clickedBtn.classList.add("active");
       const targetContent = document.getElementById(clickedBtn.dataset.target);
       if (targetContent) {
         targetContent.classList.add("active");
       }
+
+      // 탭 변경 시 각 슬라이더 초기화 (currentIndex를 0으로 설정)
+      const sliders = targetContent.querySelectorAll(".photo-slider-container");
+      sliders.forEach((slider) => {
+        const track = slider.querySelector(".photo-slider-track");
+        track.style.transform = `translateX(0px)`;
+        slider.dataset.currentIndex = "0";
+      });
     });
+  }
+
+  // --- Photo Slider 기능 ---
+  function initializePhotoSlider(sliderContainer) {
+    const track = sliderContainer.querySelector(".photo-slider-track");
+    const items = track.querySelectorAll(".photo-item");
+    const prevBtn = sliderContainer.querySelector(".photo-prev-btn");
+    const nextBtn = sliderContainer.querySelector(".photo-next-btn");
+
+    if (!track || !items || !prevBtn || !nextBtn) return;
+
+    let currentIndex = 0;
+    const totalItems = items.length;
+    let itemsVisible = window.innerWidth <= 768 ? 2 : 4;
+
+    function moveTo(index) {
+      const maxIndex = totalItems - itemsVisible;
+      if (index < 0) {
+        index = 0;
+      } else if (index > maxIndex) {
+        index = maxIndex;
+      }
+
+      const itemWidth = sliderContainer.offsetWidth / itemsVisible;
+      track.style.transform = `translateX(-${index * itemWidth}px)`;
+      currentIndex = index;
+      sliderContainer.dataset.currentIndex = index;
+    }
+
+    function updateSlider() {
+      itemsVisible = window.innerWidth <= 768 ? 2 : 4;
+      moveTo(parseInt(sliderContainer.dataset.currentIndex) || 0);
+    }
+
+    nextBtn.addEventListener("click", () => moveTo(currentIndex + 1));
+    prevBtn.addEventListener("click", () => moveTo(currentIndex - 1));
+
+    window.addEventListener("resize", updateSlider);
+    updateSlider(); // 초기 실행
+    sliderContainer.dataset.currentIndex = "0"; // 초기 current index 설정
+  }
+
+  const packagingSlider = document.querySelector(".packaging-slider");
+  if (packagingSlider) {
+    initializePhotoSlider(packagingSlider);
+  }
+
+  const conceptSlider = document.querySelector(".concept-slider");
+  if (conceptSlider) {
+    initializePhotoSlider(conceptSlider);
   }
 
   // --- Lightbox 기능 ---
@@ -242,7 +298,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const lightboxImg = document.getElementById("lightbox-image");
     const lightboxCaption = document.getElementById("lightbox-caption");
     const closeBtn = document.querySelector(".lightbox-close");
-    // .photo-item이 여러 탭에 있을 수 있으므로, 문서 전체에서 선택
     const photoItems = document.querySelectorAll(".photo-item");
 
     photoItems.forEach((item) => {
