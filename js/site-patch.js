@@ -334,3 +334,50 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+(function () {
+  const modal = document.getElementById("detail-modal");
+  const dialog = modal ? modal.querySelector(".modal__dialog") : null;
+
+  function openModal() {
+    if (!modal) return;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    if (window.fullpage_api?.setAllowScrolling) {
+      fullpage_api.setAllowScrolling(false);
+      fullpage_api.setKeyboardScrolling?.(false);
+    }
+    setTimeout(() => dialog?.focus?.(), 0);
+  }
+
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    if (window.fullpage_api?.setAllowScrolling) {
+      fullpage_api.setAllowScrolling(true);
+      fullpage_api.setKeyboardScrolling?.(true);
+    }
+  }
+
+  // 열기/닫기 위임
+  document.addEventListener("click", (e) => {
+    const openBtn = e.target.closest('[data-open="detail"]');
+    const closeBtn = e.target.closest('[data-close="detail"]');
+    if (openBtn) {
+      e.preventDefault();
+      openModal();
+    }
+    if (closeBtn) {
+      e.preventDefault();
+      closeModal();
+    }
+    if (e.target === modal) closeModal(); // 빈 영역 클릭 닫기
+  });
+
+  // ESC 닫기
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal?.classList.contains("open")) closeModal();
+  });
+})();
