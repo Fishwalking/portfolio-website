@@ -45,33 +45,6 @@ const initialGridData = [
     size: "medium",
     url: "https://namu.wiki/w/%EC%98%A4%EB%A6%AC%EC%A7%80%EB%84%88%ED%8B%B0%20%EC%95%84%EC%B8%A0",
   },
-  {
-    id: 7,
-    category: "Lore",
-    title: "광석병 (Oripathy)",
-    description:
-      "체내 오리지늄 결정화로 발병하며, 사망 시 주변을 오염시키는 불치병.",
-    size: "medium",
-    url: "https://namu.wiki/w/%EA%B4%91%EC%84%9D%EB%B3%91",
-  },
-  {
-    id: 8,
-    category: "Concept",
-    title: "이동 도시",
-    description:
-      "끊임없이 발생하는 '천재(Catastrophe)'를 피해 이동하는 거대 도시.",
-    size: "medium",
-    url: "https://namu.wiki/w/%ED%85%8C%EB%9D%BC(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)#s-3.1",
-  },
-  {
-    id: 9,
-    category: "Lore",
-    title: "감염자 (Infected)",
-    description:
-      "광석병에 걸린 사람들을 지칭하며, 사회적으로 차별과 박해의 대상이 됨.",
-    size: "large",
-    url: "https://namu.wiki/w/%EA%B4%91%EC%84%9D%EB%B3%91",
-  },
 ];
 
 function BentoCard({
