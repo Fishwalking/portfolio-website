@@ -212,104 +212,59 @@
 })();
 
 document.addEventListener("DOMContentLoaded", function () {
-  const sliderContainer = document.querySelector(".packaging-slider-container");
-  if (!sliderContainer) return;
+  // --- Onsemiro Tab 기능 ---
+  const tabContainer = document.querySelector(".onsemiro-tab-container");
+  if (tabContainer) {
+    const tabNav = tabContainer.querySelector(".tab-nav");
+    const tabBtns = tabContainer.querySelectorAll(".tab-btn");
+    const tabContents = tabContainer.querySelectorAll(".tab-content");
 
-  const slider = sliderContainer.querySelector(".packaging-slider");
-  const slides = Array.from(slider.children);
-  const prevBtn = sliderContainer.querySelector(".prev-btn");
-  const nextBtn = sliderContainer.querySelector(".next-btn");
+    tabNav.addEventListener("click", (e) => {
+      const clickedBtn = e.target.closest(".tab-btn");
+      if (!clickedBtn) return;
 
-  let currentIndex = 0;
-  const slideCount = slides.length;
-  let slidesVisible = 3;
+      // 모든 버튼과 콘텐츠에서 active 클래스 제거
+      tabBtns.forEach((btn) => btn.classList.remove("active"));
+      tabContents.forEach((content) => content.classList.remove("active"));
 
-  function setSlidesVisible() {
-    slidesVisible = window.innerWidth <= 768 ? 1 : 3;
+      // 클릭된 버튼과 해당하는 콘텐츠에 active 클래스 추가
+      clickedBtn.classList.add("active");
+      const targetContent = document.getElementById(clickedBtn.dataset.target);
+      if (targetContent) {
+        targetContent.classList.add("active");
+      }
+    });
   }
 
-  function moveToSlide(index) {
-    const maxIndex = slideCount - slidesVisible;
-    if (index < 0) {
-      index = 0;
-    } else if (index > maxIndex) {
-      index = maxIndex;
-    }
-
-    // 첫 번째 슬라이드는 너비가 다르므로 예외 처리
-    if (currentIndex === 0 && index > 0) {
-      // 첫 슬라이드에서 다음으로 넘어갈 때
-      const firstSlideWidth = slides[0].offsetWidth;
-      slider.style.transform = `translateX(-${firstSlideWidth}px)`;
-    } else if (index === 0) {
-      // 첫 슬라이드로 돌아올 때
-      slider.style.transform = `translateX(0px)`;
-    } else {
-      // 나머지 일반 슬라이드 이동
-      const firstSlideWidth = slides[0].offsetWidth;
-      const regularSlideWidth = slides[1].offsetWidth;
-      const offset = firstSlideWidth + (index - 1) * regularSlideWidth;
-      slider.style.transform = `translateX(-${offset}px)`;
-    }
-
-    currentIndex = index;
-  }
-
-  function initializeSlider() {
-    setSlidesVisible();
-    // 슬라이더 위치를 현재 인덱스에 맞게 재조정
-    // 페이지 로드 시에는 애니메이션 없이 즉시 이동
-    const originalTransition = slider.style.transition;
-    slider.style.transition = "none";
-    moveToSlide(currentIndex);
-    // 약간의 지연 후 트랜지션 복원
-    setTimeout(() => {
-      slider.style.transition = originalTransition;
-    }, 50);
-  }
-
-  nextBtn.addEventListener("click", () => {
-    slider.style.transition = "transform 0.5s ease-in-out";
-    moveToSlide(currentIndex + 1);
-  });
-  prevBtn.addEventListener("click", () => {
-    slider.style.transition = "transform 0.5s ease-in-out";
-    moveToSlide(currentIndex - 1);
-  });
-
-  // --- Lightbox 기능 (수정 없음) ---
+  // --- Lightbox 기능 ---
   const lightbox = document.getElementById("image-lightbox");
-  const lightboxImg = document.getElementById("lightbox-image");
-  const lightboxCaption = document.getElementById("lightbox-caption");
-  const closeBtn = document.querySelector(".lightbox-close");
+  if (lightbox) {
+    const lightboxImg = document.getElementById("lightbox-image");
+    const lightboxCaption = document.getElementById("lightbox-caption");
+    const closeBtn = document.querySelector(".lightbox-close");
+    // .photo-item이 여러 탭에 있을 수 있으므로, 문서 전체에서 선택
+    const photoItems = document.querySelectorAll(".photo-item");
 
-  slides.forEach((slide) => {
-    if (slide.hasAttribute("data-filename")) {
-      slide.addEventListener("click", (e) => {
-        // 슬라이드 이동 중 클릭 방지 (선택 사항)
-        if (slider.style.transform !== "") {
-          const img = slide.querySelector("img");
-          const filename = slide.dataset.filename;
+    photoItems.forEach((item) => {
+      item.addEventListener("click", () => {
+        const img = item.querySelector("img");
+        const filename = item.dataset.filename;
 
-          lightbox.style.display = "flex";
-          lightboxImg.src = img.src;
-          lightboxCaption.textContent = filename;
-        }
+        lightbox.style.display = "flex";
+        lightboxImg.src = img.src;
+        lightboxCaption.textContent = filename;
       });
-    }
-  });
+    });
 
-  function closeLightbox() {
-    lightbox.style.display = "none";
+    function closeLightbox() {
+      lightbox.style.display = "none";
+    }
+
+    closeBtn.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
   }
-
-  closeBtn.addEventListener("click", closeLightbox);
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) {
-      closeLightbox();
-    }
-  });
-
-  window.addEventListener("resize", initializeSlider);
-  window.addEventListener("load", initializeSlider);
 });
