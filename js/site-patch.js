@@ -313,8 +313,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const previewSlider = document.querySelector(".detail-slider");
     const closeBtn = detailModal.querySelector(".lightbox-close");
 
+    // ▼▼▼ 이 부분을 추가해주세요 ▼▼▼
+    const toastMessage = detailModal.querySelector(".scroll-toast");
+    let toastTimer; // 타이머 변수 추가
+    // ▲▲▲ 여기까지 추가 ▲▲▲
+
     function openDetailModal() {
       detailModal.style.display = "flex";
+
+      // ▼▼▼ 이 부분을 추가해주세요 ▼▼▼
+      // 이전 타이머가 있다면 초기화
+      clearTimeout(toastTimer);
+
+      // 팝업이 열리면 'show' 클래스 추가
+      toastMessage.classList.add("show");
+
+      // 3초 후에 'show' 클래스를 제거하여 메시지 숨김
+      toastTimer = setTimeout(() => {
+        toastMessage.classList.remove("show");
+      }, 3000);
+      // ▲▲▲ 여기까지 추가 ▲▲▲
     }
 
     function closeDetailModal() {
@@ -334,50 +352,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-(function () {
-  const modal = document.getElementById("detail-modal");
-  const dialog = modal ? modal.querySelector(".modal__dialog") : null;
-
-  function openModal() {
-    if (!modal) return;
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
-    if (window.fullpage_api?.setAllowScrolling) {
-      fullpage_api.setAllowScrolling(false);
-      fullpage_api.setKeyboardScrolling?.(false);
-    }
-    setTimeout(() => dialog?.focus?.(), 0);
-  }
-
-  function closeModal() {
-    if (!modal) return;
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-    if (window.fullpage_api?.setAllowScrolling) {
-      fullpage_api.setAllowScrolling(true);
-      fullpage_api.setKeyboardScrolling?.(true);
-    }
-  }
-
-  // 열기/닫기 위임
-  document.addEventListener("click", (e) => {
-    const openBtn = e.target.closest('[data-open="detail"]');
-    const closeBtn = e.target.closest('[data-close="detail"]');
-    if (openBtn) {
-      e.preventDefault();
-      openModal();
-    }
-    if (closeBtn) {
-      e.preventDefault();
-      closeModal();
-    }
-    if (e.target === modal) closeModal(); // 빈 영역 클릭 닫기
-  });
-
-  // ESC 닫기
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal?.classList.contains("open")) closeModal();
-  });
-})();
