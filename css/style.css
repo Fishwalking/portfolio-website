@@ -742,17 +742,34 @@ a {
 
 /* --- 이미지 위에 GIF 겹치기 스타일 --- */
 
-/* 이미지를 감싸는 컨테이너 설정 */
+/* 이미지를 감싸는 컨테이너 설정 (공통) */
 .image-container {
-  position: relative; /* 자식 요소(GIF)를 이 컨테이너 기준으로 위치시키기 위함 */
-  line-height: 0; /* 이미지 사이의 불필요한 공백 제거 */
+  position: relative;
+  line-height: 0;
 }
 
-/* 위에 겹쳐질 GIF 스타일 */
+/* 모든 GIF에 적용될 기본 스타일 (공통) */
 .overlay-gif {
-  position: absolute; /* 부모 요소(image-container) 위에 겹치도록 설정 */
-  top: 0;
-  left: 0;
-  width: 100%; /* 부모와 동일한 너비 */
-  height: 100%; /* 부모와 동일한 높이 */
+  position: absolute; /* 겹치기 위해 필수 */
+  height: auto; /* 가로 비율에 맞춰 세로 자동 조절 */
+}
+
+/* ▼▼▼ 첫 번째 GIF (위스키) 개별 스타일 ▼▼▼ */
+#whiskey-gif {
+  width: 100%; /* 가로 크기 50% */
+  top: 0%; /* 위에서부터 45% 지점 */
+  left: 50%; /* 왼쪽에서부터 50% 지점 */
+  transform: translateX(-50%); /* 가로축 기준 중앙 정렬 */
+}
+
+/* ▼▼▼ 두 번째 GIF (쌀) 개별 스타일 ▼▼▼ */
+#rice-gif {
+  width: 100%; /* 가로 크기 100% (꽉 채우기) */
+  top: 0; /* 맨 위에서 시작 */
+  left: 0; /* 맨 왼쪽에서 시작 */
+}
+#time-gif {
+  width: 30%; /* 가로 크기 40% */
+  bottom: 33%; /* 아래에서 20px 떨어진 위치 */
+  right: 55%; /* 오른쪽에서 20px 떨어진 위치 */
 }
