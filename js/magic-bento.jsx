@@ -26,29 +26,15 @@ const initialGridData = [
   },
   {
     id: 4,
-    category: "세력",
-    title: "로도스 아일랜드",
-    description: "광석병 치료를 목표로 하는 제약회사이자 무장 조직.",
-    url: "https://namu.wiki/w/%EB%A1%9C%EB%8F%84%EC%8A%A4%20%EC%95%84%EC%9D%BC%EB%9E%9C%EB%93%9C(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)",
+    type: "video",
+    videoUrl: "https://www.youtube.com/embed/yjq8_zr1opo",
     colSpan: 1,
     rowSpan: 1,
   },
   {
     id: 5,
-    category: "세력",
-    title: "리유니온",
-    description: "감염자의 권리를 위해 싸우는 극단주의 무장 조직.",
-    url: "https://namu.wiki/w/%EB%A6%AC%EC%9C%A0%EB%8B%88%EC%98%A8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)",
-    colSpan: 2,
-    rowSpan: 1, // 넓은 카드
-  },
-  {
-    id: 6,
-    category: "개념",
-    title: "오리지늄 아츠",
-    description:
-      "오리지늄을 매개로 발동하는, 일반적으로 '마법'이라 불리는 능력.",
-    url: "https://namu.wiki/w/%EC%98%A4%EB%A6%AC%EC%A7%80%EB%84%88%ED%8B%B0%20%EC%95%84%EC%B8%A0",
+    type: "video",
+    videoId: "https://youtube.com/shorts/embed/NQULd4sUY_M",
     colSpan: 1,
     rowSpan: 1,
   },
