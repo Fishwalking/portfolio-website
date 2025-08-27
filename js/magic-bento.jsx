@@ -26,8 +26,8 @@ const initialGridData = [
   },
   {
     id: 4,
-    type: "video",
-    videoUrl: "https://www.youtube.com/embed/yjq8_zr1opo",
+    type: "img",
+    videoUrl: "img/wedding.png",
     colSpan: 1,
     rowSpan: 1,
   },
