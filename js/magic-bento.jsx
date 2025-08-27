@@ -28,6 +28,7 @@ const initialGridData = [
     id: 4,
     type: "img",
     videoUrl: "img/wedding.png",
+    url: "https://drive.google.com/file/d/1v_Nn6w6cLHXaTJipZgnF1cnntW_PYGqj/view?usp=sharing",
     colSpan: 1,
     rowSpan: 1,
   },
@@ -215,6 +216,12 @@ const MagicBentoGrid = ({
                     allowFullScreen
                   ></iframe>
                 </div>
+              ) : item.type === "img" ? (
+                <img
+                  src={item.videoUrl}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
               ) : (
                 <>
                   <div className="card__header">
