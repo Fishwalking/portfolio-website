@@ -35,7 +35,7 @@ const initialGridData = [
   {
     id: 5,
     type: "video",
-    videoId: "https://www.youtube.com/embed/NQULd4sUY_M",
+    videoUrl: "https://www.youtube.com/embed/NQULd4sUY_M",
     colSpan: 1,
     rowSpan: 1,
   },
