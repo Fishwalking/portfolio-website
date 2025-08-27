@@ -526,8 +526,7 @@ a {
   opacity: 1;
 }
 
-/* --- Onsemiro Tab & Lightbox Styles --- */
-
+/* --- Onsemiro Tab --- */
 .onsemiro-tab-container {
   width: 100%;
   max-width: 900px;
@@ -571,7 +570,6 @@ a {
   display: block;
 }
 
-/* 기획서 iframe 크기 복구 */
 #plan iframe {
   width: 100%;
   height: 500px;
@@ -579,7 +577,7 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- Photo & Detail Slider Styles --- */
+/* --- Photo Slider --- */
 .photo-slider-container {
   position: relative;
   width: 100%;
@@ -599,7 +597,6 @@ a {
   box-sizing: border-box;
   padding: 0 8px;
 }
-/* 패키징, 컨셉 탭의 아이템만 개별 클릭 가능하도록 커서 변경 */
 .packaging-slider .photo-item,
 .concept-slider .photo-item {
   cursor: pointer;
@@ -645,7 +642,6 @@ a {
   right: 0;
 }
 
-/* Video Tab Styles */
 .video-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -654,75 +650,6 @@ a {
 .video-grid iframe {
   width: 100%;
   height: 450px;
-}
-
-/* Lightbox & Modal Styles */
-.lightbox {
-  display: none; /* 이 부분이 중요합니다. 평소에는 팝업을 숨깁니다. */
-  position: fixed;
-  z-index: 1000;
-  left: -8.5%;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
-
-  /* JavaScript가 display 속성을 'flex'로 바꾸면, 아래 정렬이 적용됩니다. */
-  justify-content: center;
-  align-items: center;
-}
-
-/* 개별 이미지 라이트박스 */
-.lightbox-content {
-  position: relative;
-  text-align: center;
-}
-.lightbox-content img {
-  max-width: 95vw;
-  max-height: 95vh;
-  border-radius: 8px;
-  object-fit: contain;
-}
-#lightbox-caption {
-  margin-top: 15px;
-  color: #ccc;
-  font-size: 1rem;
-}
-
-/* 상세페이지 스크롤 모달 */
-.detail-modal-content {
-  /* position과 transform을 사용하지 않고, 부모인 .lightbox의 flex 정렬을 따릅니다. */
-  position: relative;
-  width: 100%;
-  max-width: 800px;
-  height: 90vh;
-  overflow-y: auto;
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-}
-.detail-modal-content img {
-  width: 100%;
-  display: block;
-}
-
-/* 닫기 버튼 공통 스타일 */
-.lightbox-close {
-  position: absolute;
-  top: 15px;
-  right: 25px;
-  font-size: 40px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1010;
-}
-/* 상세페이지 닫기 버튼 (어두운 색) */
-#detail-page-modal .lightbox-close {
-  color: #333;
-}
-/* 개별 이미지 닫기 버튼 (밝은 색) */
-#image-lightbox .lightbox-close {
-  color: #f1f1f1;
 }
 
 @keyframes fadeIn {
@@ -740,145 +667,104 @@ a {
   } /* 모바일에선 2개씩 */
 }
 
-/* --- 이미지 위에 GIF 겹치기 스타일 --- */
-
-/* 이미지를 감싸는 컨테이너 설정 (공통) */
+/* --- 이미지 위에 GIF 겹치기 --- */
 .image-container {
   position: relative;
   line-height: 0;
 }
-
-/* 모든 GIF에 적용될 기본 스타일 (공통) */
 .overlay-gif {
-  position: absolute; /* 겹치기 위해 필수 */
-  height: auto; /* 가로 비율에 맞춰 세로 자동 조절 */
+  position: absolute;
+  height: auto;
 }
-
-/* ▼▼▼ 첫 번째 GIF (위스키) 개별 스타일 ▼▼▼ */
 #whiskey-gif {
-  width: 100%; /* 가로 크기 50% */
-  top: 0%; /* 위에서부터 45% 지점 */
-  left: 50%; /* 왼쪽에서부터 50% 지점 */
-  transform: translateX(-50%); /* 가로축 기준 중앙 정렬 */
+  width: 100%;
+  top: 0%;
+  left: 50%;
+  transform: translateX(-50%);
 }
-
-/* ▼▼▼ 두 번째 GIF (쌀) 개별 스타일 ▼▼▼ */
 #rice-gif {
-  width: 100%; /* 가로 크기 100% (꽉 채우기) */
-  top: 0; /* 맨 위에서 시작 */
-  left: 0; /* 맨 왼쪽에서 시작 */
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 #time-gif {
-  width: 30%; /* 가로 크기 40% */
-  bottom: 33%; /* 아래에서 20px 떨어진 위치 */
-  right: 55%; /* 오른쪽에서 20px 떨어진 위치 */
+  width: 30%;
+  bottom: 33%;
+  right: 55%;
 }
-.lb {
-  position: fixed;
-  inset: 0;
+
+/* =================================================================
+ * 팝업(모달, 라이트박스) 공통 스타일
+ * ================================================================= */
+.lightbox {
   display: none;
-  align-items: center;
+  position: fixed;
+  z-index: 1000;
+  inset: 0; /* top, right, bottom, left 0 */
+  background-color: rgba(0, 0, 0, 0.85);
   justify-content: center;
-  z-index: 10000;
+  align-items: center;
+  animation: fadeIn 0.3s;
 }
-.lb.open {
-  display: flex;
-}
-.lb__backdrop {
+.lightbox-close {
   position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(2px);
-}
-
-/* 다이얼로그 */
-.lb__dialog {
-  position: relative;
-  margin: 0;
-  max-width: 92vw;
-  max-height: 92vh;
-  animation: lbFade 0.18s ease;
-}
-@keyframes lbFade {
-  from {
-    transform: scale(0.96);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.lb__stage {
-  position: relative;
-  background: #000;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.lb__img {
-  display: block;
-  max-width: 92vw;
-  max-height: calc(92vh - 44px);
-}
-
-.lb__close {
-  position: absolute;
-  top: -44px;
-  right: -4px;
-  width: 40px;
-  height: 40px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
+  top: 15px;
+  right: 25px;
+  font-size: 40px;
+  font-weight: bold;
   cursor: pointer;
-  font-size: 24px;
-  line-height: 40px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  z-index: 1010;
 }
-@media (max-width: 640px) {
-  .lb__close {
-    top: 8px;
-    right: 8px;
-  }
-}
-
-.lb__caption {
-  margin-top: 10px;
-  color: #ddd;
-  font-size: 14px;
-  text-align: center;
-}
-
-/* 로딩 스피너 */
-.lb__spinner {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(#111, #111) padding-box,
-    linear-gradient(120deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0))
-      border-box;
-  border: 1px solid transparent;
-}
-.lb.loading .lb__spinner {
-  opacity: 1;
-}
-.lb:not(.loading) .lb__spinner {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* 확대 가능한 이미지 커서 표시 (선택) */
-#page-3 [data-zoom] {
-  cursor: zoom-in;
-}
-
-/* 라이트박스 열림 동안 배경 스크롤/스냅 잠금 */
 body.lb-open {
   overflow: hidden;
 }
 body.lb-open .pages,
 body.lb-open .sections {
   scroll-snap-type: none !important;
+}
+
+/* =================================================================
+ * 1. 상세페이지 전체보기 (세로 스크롤 모달)
+ * ================================================================= */
+#detail-page-modal .detail-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 90vh;
+  left: -8%;
+  overflow-y: auto;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+}
+#detail-page-modal .detail-modal-content img {
+  width: 100%;
+  display: block;
+}
+/* 상세페이지 모달의 닫기 버튼 (어두운 색) */
+#detail-page-modal .lightbox-close {
+  color: #333;
+}
+
+/* =================================================================
+ * 2. 패키징, 컨셉 등 개별 이미지 확대 (라이트박스)
+ * ================================================================= */
+#image-lightbox .lightbox-content {
+  position: relative;
+  text-align: center;
+}
+#image-lightbox .lightbox-content img {
+  max-width: 95vw;
+  max-height: 95vh;
+  border-radius: 8px;
+  object-fit: contain;
+}
+#image-lightbox #lightbox-caption {
+  margin-top: 15px;
+  color: #ccc;
+  font-size: 1rem;
+}
+/* 개별 이미지 라이트박스의 닫기 버튼 (밝은 색) */
+#image-lightbox .lightbox-close {
+  color: #f1f1f1;
 }
