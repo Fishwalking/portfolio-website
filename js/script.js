@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const sections = Array.from(document.querySelectorAll(".full-page-section"));
   const navLinks = document.querySelectorAll(".nav-links a");
   const modalOverlay = document.getElementById("modal-overlay");
-  // ▼▼▼ 상세페이지 팝업 요소를 가져옵니다. ▼▼▼
   const detailPageModal = document.getElementById("detail-page-modal");
 
   const fadeInElements = sections.map((section) =>
@@ -93,19 +92,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (idx !== -1 && idx !== currentIndex) scrollToSection(idx, false);
   });
 
-  // ▼▼▼ 모든 팝업창이 열려있는지 확인하는 함수로 수정합니다. ▼▼▼
   const isAnyModalOpen = () => {
     const isTrailerModalOpen =
       !!modalOverlay && getComputedStyle(modalOverlay).display !== "none";
     const isDetailModalOpen =
       !!detailPageModal && getComputedStyle(detailPageModal).display !== "none";
-    return isTrailerModalOpen || isDetailModalOpen;
+    const isImageLightboxOpen =
+      !!document.getElementById("image-lightbox") &&
+      getComputedStyle(document.getElementById("image-lightbox")).display !==
+        "none";
+    return isTrailerModalOpen || isDetailModalOpen || isImageLightboxOpen;
   };
 
   window.addEventListener(
     "wheel",
     (e) => {
-      // isAnyModalOpen() 함수를 사용하도록 변경
       if (isAnyModalOpen() || isScrolling) return;
 
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
@@ -120,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   window.addEventListener("keydown", (e) => {
-    // isAnyModalOpen() 함수를 사용하도록 변경
     if (isAnyModalOpen()) return;
     if (["ArrowRight", "PageDown"].includes(e.key)) {
       e.preventDefault();
@@ -143,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "touchstart",
     (e) => {
-      // isAnyModalOpen() 함수를 사용하도록 변경
       if (isAnyModalOpen()) return;
       const t = e.changedTouches[0];
       touchStartX = t.clientX;
@@ -154,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "touchend",
     (e) => {
-      // isAnyModalOpen() 함수를 사용하도록 변경
       if (isAnyModalOpen() || touchStartX === null) return;
       const t = e.changedTouches[0];
       const dx = t.clientX - touchStartX;
@@ -167,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     { passive: true }
   );
-  // ▲▲▲ 여기까지 스크롤 관련 코드 수정 ▲▲▲
 
   navLinks.forEach((link) =>
     link.addEventListener("click", (e) => {
@@ -190,13 +187,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const cards = Array.from(track.children);
     const cardCount = cards.length;
     let isMoving = false;
-
-    // 1. 무한 루프를 위해 앞뒤로 카드 복제
     const cloneFirst = cards[0].cloneNode(true);
     const cloneLast = cards[cardCount - 1].cloneNode(true);
     track.appendChild(cloneFirst);
     track.insertBefore(cloneLast, cards[0]);
-
     const getCardWidth = () => {
       const card = cards[0];
       const style = getComputedStyle(card);
@@ -206,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
         parseFloat(style.marginRight)
       );
     };
-
     const updatePosition = (withTransition = true) => {
       if (!withTransition) {
         track.style.transition = "none";
@@ -216,17 +209,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const cardWidth = getCardWidth();
       track.style.transform = `translateX(-${(opIndex + 1) * cardWidth}px)`;
     };
-
-    // 초기 위치 설정
     updatePosition(false);
-
     opNext.addEventListener("click", () => {
       if (isMoving) return;
       isMoving = true;
-
       opIndex++;
       updatePosition();
-
       if (opIndex === cardCount) {
         setTimeout(() => {
           opIndex = 0;
@@ -234,19 +222,14 @@ document.addEventListener("DOMContentLoaded", () => {
           isMoving = false;
         }, 600);
       } else {
-        setTimeout(() => {
-          isMoving = false;
-        }, 600);
+        setTimeout(() => (isMoving = false), 600);
       }
     });
-
     opPrev.addEventListener("click", () => {
       if (isMoving) return;
       isMoving = true;
-
       opIndex--;
       updatePosition();
-
       if (opIndex < 0) {
         setTimeout(() => {
           opIndex = cardCount - 1;
@@ -254,12 +237,9 @@ document.addEventListener("DOMContentLoaded", () => {
           isMoving = false;
         }, 600);
       } else {
-        setTimeout(() => {
-          isMoving = false;
-        }, 600);
+        setTimeout(() => (isMoving = false), 600);
       }
     });
-
     window.addEventListener("resize", () => updatePosition(false));
   }
 
@@ -319,20 +299,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (bgm && musicToggleBtn) {
     const volumeSlider = document.getElementById("volume-slider");
     const musicControls = musicToggleBtn.closest(".music-controls");
-
-    if (volumeSlider) {
-      bgm.volume = parseFloat(volumeSlider.value);
-    }
-
+    if (volumeSlider) bgm.volume = parseFloat(volumeSlider.value);
     const syncMusicUI = () => {
       if (!musicControls) return;
       const playing = !bgm.paused;
-      // ▼ [수정] 재생 버튼 아이콘 변경
       musicToggleBtn.textContent = playing ? "⏸️" : "▶️";
       musicToggleBtn.setAttribute("aria-pressed", String(playing));
       musicControls.classList.toggle("playing", playing);
     };
-
     musicToggleBtn.addEventListener("click", async () => {
       try {
         if (bgm.paused) await bgm.play();
@@ -342,17 +316,139 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       syncMusicUI();
     });
-
     volumeSlider?.addEventListener("input", (e) => {
       bgm.volume = parseFloat(e.target.value);
     });
-
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && !bgm.paused) bgm.pause();
       syncMusicUI();
     });
-
     syncMusicUI();
+  }
+
+  /**
+   * 온세미로 섹션 기능 초기화 (탭, 슬라이더, 라이트박스)
+   */
+  function initializeOnsemiroSection() {
+    const onsemiroSection = document.getElementById("onsemiro");
+    if (!onsemiroSection) return;
+
+    // --- 탭 전환 로직 ---
+    const tabButtons = onsemiroSection.querySelectorAll(".tab-btn");
+    const tabContents = onsemiroSection.querySelectorAll(".tab-content");
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetId = button.dataset.target;
+        tabButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+        tabContents.forEach((content) => {
+          content.classList.remove("active");
+          if (content.id === targetId) {
+            content.classList.add("active");
+          }
+        });
+      });
+    });
+
+    // --- 각 탭의 슬라이더 초기화 ---
+    const sliders = onsemiroSection.querySelectorAll(".photo-slider-container");
+    sliders.forEach((sliderContainer) => {
+      const track = sliderContainer.querySelector(".photo-slider-track");
+      const prevBtn = sliderContainer.querySelector(".photo-prev-btn");
+      const nextBtn = sliderContainer.querySelector(".photo-next-btn");
+      if (!track || !prevBtn || !nextBtn) return;
+
+      const items = Array.from(track.children);
+      if (items.length <= 4) {
+        prevBtn.style.display = "none";
+        nextBtn.style.display = "none";
+        return;
+      }
+
+      let currentIndex = 0;
+      const itemsVisible = 4;
+
+      function updateSliderPosition() {
+        // 한 번에 한 아이템 너비만큼 이동
+        const itemWidthPercent = 100 / items.length;
+        track.style.transform = `translateX(-${
+          currentIndex * itemWidthPercent * itemsVisible
+        }%)`;
+      }
+
+      nextBtn.addEventListener("click", () => {
+        if (currentIndex < items.length - itemsVisible) {
+          currentIndex++;
+          updateSliderPosition();
+        }
+      });
+      prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateSliderPosition();
+        }
+      });
+    });
+
+    // --- '상세페이지' 탭 라이트박스 로직 ---
+    const detailSlider = onsemiroSection.querySelector(".detail-slider");
+    const closeDetailModalBtn =
+      detailPageModal?.querySelector(".lightbox-close");
+
+    if (detailSlider && detailPageModal) {
+      detailSlider.addEventListener("click", () => {
+        detailPageModal.style.display = "flex";
+      });
+
+      const closeModal = () => (detailPageModal.style.display = "none");
+      closeDetailModalBtn?.addEventListener("click", closeModal);
+      detailPageModal.addEventListener("click", (e) => {
+        if (e.target === detailPageModal) closeModal();
+      });
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && detailPageModal.style.display === "flex") {
+          closeModal();
+        }
+      });
+    }
+
+    // --- '패키징' & '컨셉' 탭 이미지 확대 라이트박스 로직 ---
+    const imageLightbox = document.getElementById("image-lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const lightboxCaption = document.getElementById("lightbox-caption");
+    const closeImageLightboxBtn =
+      imageLightbox?.querySelector(".lightbox-close");
+
+    if (imageLightbox && lightboxImg && lightboxCaption) {
+      const imagesToZoom = onsemiroSection.querySelectorAll(
+        "#packaging .photo-item, #concept .photo-item"
+      );
+
+      const openLightbox = (imgElement) => {
+        lightboxImg.src = imgElement.src;
+        lightboxCaption.textContent = imgElement.alt;
+        imageLightbox.style.display = "flex";
+      };
+
+      imagesToZoom.forEach((item) => {
+        item.addEventListener("click", (e) => {
+          e.preventDefault();
+          const img = item.querySelector("img");
+          if (img) openLightbox(img);
+        });
+      });
+
+      const closeLightbox = () => (imageLightbox.style.display = "none");
+      closeImageLightboxBtn?.addEventListener("click", closeLightbox);
+      imageLightbox.addEventListener("click", (e) => {
+        if (e.target === imageLightbox) closeLightbox();
+      });
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && imageLightbox.style.display === "flex") {
+          closeLightbox();
+        }
+      });
+    }
   }
 
   initializeOnsemiroSection();
