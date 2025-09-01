@@ -688,9 +688,11 @@ a {
   left: 0;
 }
 #time-gif {
-  width: 30%;
-  bottom: 33%;
-  right: 55%;
+  position: absolute;
+  top: 55%;
+  left: -25%;
+  width: 60%;
+  scale: 20%;
 }
 
 /* =================================================================
