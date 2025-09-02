@@ -855,3 +855,69 @@ body.lb-open .sections {
 }
 
 /* ===== 새로운 디자인 슬라이더 스타일 끝 ===== */
+/* SNS 링크 버튼 스타일 */
+.sns-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.sns-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #fff;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  min-width: 160px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sns-btn:hover {
+  transform: translateY(-4px);
+  color: #fff;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* YouTube 버튼 스타일 */
+.sns-btn.youtube {
+  background-color: #ff0000;
+}
+.sns-btn.youtube:hover {
+  background-color: transparent;
+  border-color: #ff0000;
+}
+
+/* Instagram 버튼 스타일 */
+.sns-btn.instagram {
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  border: none;
+  padding: 14px 32px; /* border가 없으므로 padding을 2px 늘려 크기를 맞춤 */
+}
+.sns-btn.instagram:hover {
+  background: transparent;
+  border: 2px solid #dc2743;
+  padding: 12px 30px;
+}
+
+/* 블로그 및 기타 버튼 스타일 */
+.sns-btn.blog {
+  background-color: #007bff;
+}
+.sns-btn.blog:hover {
+  background-color: transparent;
+  border-color: #007bff;
+}
