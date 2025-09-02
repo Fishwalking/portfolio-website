@@ -39,6 +39,12 @@ const initialGridData = [
     colSpan: 1,
     rowSpan: 1,
   },
+  {
+    id: 6, // 새로운 ID
+    type: "video",
+    videoUrl: "https://www.youtube.com/embed/bT_Uq2hfWCg",
+    rowSpan: 1,
+  },
 ];
 
 // --- 애니메이션 카드 컴포넌트 ---
