@@ -23,10 +23,10 @@
       <nav class="navbar" aria-label="주요 내비게이션">
         <a href="#index" class="logo" aria-label="홈으로">PORTFOLIO</a>
         <ul class="nav-links">
-          <li><a href="#information">Preview</a></li>
+          <li><a href="#information">interview</a></li>
           <li><a href="#onsemiro">Onsemiro</a></li>
-          <li><a href="#Project">Project</a></li>
-          <li><a href="#media">Media</a></li>
+          <li><a href="#project">project</a></li>
+          <li><a href="#design">design</a></li>
           <li><a href="#more">More</a></li>
           <li>
             <div class="music-controls" aria-label="배경음악 제어">
@@ -204,8 +204,12 @@
             aria-hidden="true"
           ></iframe>
         </div>
-        <div class="section-content fade-in-up">
+        <div
+          class="section-content fade-in-up"
+          style="position: relative; z-index: 1"
+        >
           <h2>인터뷰 영상</h2>
+          <p>저의 작업 철학과 스토리를 담은 인터뷰 영상입니다.</p>
 
           <div class="video-wrapper">
             <iframe
@@ -465,35 +469,59 @@
       </section>
 
       <section
-        id="Project"
+        id="project"
         class="full-page-section dark-bg"
         aria-label="작업물"
       >
         <div class="section-content fade-in-up">
-          <h1 style="font-size: 3em; font-weight: bold; color: #f0f0f0">
-            Project
-          </h1>
-
+          <h2>Project</h2>
           <div id="magic-bento-root" aria-live="polite"></div>
         </div>
       </section>
+
       <section
-        id="media"
+        id="design"
         class="full-page-section light-bg"
-        aria-label="미디어"
+        aria-label="디자인"
       >
         <div class="section-content fade-in-up">
-          <h2>미디어 자료</h2>
-          <p>게임의 공식 트레일러와 홍보 영상을 시청하세요.</p>
-          <button
-            type="button"
-            id="open-modal"
-            class="btn-primary"
-            aria-haspopup="dialog"
-            aria-controls="modal-overlay"
-          >
-            트레일러 보기
-          </button>
+          <h2>디자인 작업물</h2>
+          <p>다양한 컨셉의 시각 디자인 작업물입니다.</p>
+
+          <div class="design-slider-container">
+            <div class="design-slider-track">
+              <div class="design-slide">
+                <div class="design-item">
+                  <img src="img/Design 1.png" alt="디자인 1" />
+                </div>
+                <div class="design-item">
+                  <img
+                    src="img/Design 1-mockup.png"
+                    alt="디자인 1 목업"
+                    img
+                    src="img/Design 2.png"
+                    alt="디자인 2"
+                  />
+                </div>
+                <div class="design-item">
+                  <img src="img/Design 2.png" alt="디자인 2" />
+                </div>
+                <div class="design-item">
+                  <img src="img/Design 2-mockup.png" alt="디자인 2 목업" />
+                </div>
+              </div>
+              <div class="design-slide">
+                <div class="design-item">
+                  <img src="img/Design 3.jpg" alt="디자인 3" />
+                </div>
+                <div class="design-item-placeholder"></div>
+                <div class="design-item-placeholder"></div>
+                <div class="design-item-placeholder"></div>
+              </div>
+            </div>
+            <button class="slider-btn design-prev-btn">＜</button>
+            <button class="slider-btn design-next-btn">＞</button>
+          </div>
         </div>
       </section>
 
@@ -574,6 +602,13 @@
       <div class="lightbox-content">
         <img src="" alt="확대 이미지" id="lightbox-img" />
         <div id="lightbox-caption"></div>
+        <div id="design-image-lightbox" class="lightbox" style="display: none">
+          <span class="lightbox-close">&times;</span>
+          <div class="lightbox-content">
+            <img src="" alt="확대 디자인 이미지" id="design-lightbox-img" />
+            <div id="design-lightbox-caption"></div>
+          </div>
+        </div>
       </div>
     </div>
   </body>

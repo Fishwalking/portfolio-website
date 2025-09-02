@@ -500,3 +500,38 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   })();
 });
+// --- 디자인 슬라이더 로직 ---
+document.addEventListener("DOMContentLoaded", () => {
+  const track = document.querySelector(".design-slider-track");
+
+  // track 요소가 페이지에 존재하는지 확인 후 스크립트 실행
+  if (track) {
+    const slides = Array.from(track.children);
+    const nextButton = document.querySelector(".design-next-btn");
+    const prevButton = document.querySelector(".design-prev-btn");
+    const slideCount = slides.length;
+    let currentIndex = 0;
+
+    const updateSlidePosition = () => {
+      // 100을 슬라이드 개수로 나눈 값만큼 이동
+      const movePercentage = currentIndex * (100 / slideCount);
+      track.style.transform = `translateX(-${movePercentage}%)`;
+    };
+
+    nextButton.addEventListener("click", () => {
+      currentIndex++;
+      if (currentIndex >= slideCount) {
+        currentIndex = 0; // 마지막 슬라이드에서 처음으로
+      }
+      updateSlidePosition();
+    });
+
+    prevButton.addEventListener("click", () => {
+      currentIndex--;
+      if (currentIndex < 0) {
+        currentIndex = slideCount - 1; // 첫 슬라이드에서 마지막으로
+      }
+      updateSlidePosition();
+    });
+  }
+});
