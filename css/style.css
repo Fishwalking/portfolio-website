@@ -419,16 +419,23 @@ a {
   color: var(--text);
   cursor: pointer;
 }
+/* 2번째 페이지 영상 Wrapper 스타일 */
 .video-wrapper {
   position: relative;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.25%; /* 16:9 비율 유지 (9 / 16 * 100) */
   height: 0;
   overflow: hidden;
-  border-radius: 8px;
+  max-width: 1080px; /* 최대 너비 설정 (원하는 값으로 조절) */
+  margin: 20px auto; /* 가운데 정렬 및 상하 여백 추가 */
+  background-color: rgba(0, 0, 0, 0.7); /* 영상 배경색 (선택 사항) */
+  border-radius: 8px; /* 모서리 둥글게 (선택 사항) */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 효과 (선택 사항) */
 }
+
 .video-wrapper iframe {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 }
