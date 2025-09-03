@@ -40,9 +40,10 @@ const initialGridData = [
     rowSpan: 1,
   },
   {
-    id: 6, // 새로운 ID
+    id: 6, // 인터뷰 영상
     type: "video",
-    videoUrl: "https://www.youtube.com/embed/bT_Uq2hfWCg",
+    videoUrl: "https://www.youtube.com/embed/u-Az92pscTA",
+    colSpan: 1,
     rowSpan: 1,
   },
 ];
