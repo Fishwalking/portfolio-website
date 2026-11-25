@@ -35,6 +35,9 @@
   letter-spacing: -.05em;
   line-height: 1.08;
 }
+@media (min-width: 90rem) {
+  .work-content { max-width: clamp(80rem, min(85vw, 151vh), 102.5rem); }
+}
 .project-grid, .design-grid {
   grid-area: gallery;
   display: grid;
@@ -147,17 +150,54 @@
 }
 .design-open, .design-original { text-decoration: underline; text-underline-offset: .28em; }
 .design-open { color: #42493e; font-size: .875rem; white-space: nowrap; }
-.design-feature:hover .design-open, .design-companion:hover span { color: #6b4b29; }
+.design-feature:hover .design-open { color: #6b4b29; }
 .design-companion {
-  display: inline-flex;
-  max-width: 100%;
-  align-items: center;
-  gap: .85rem;
-  padding: .8rem 0;
-  color: #41463f;
-  font-size: .95rem;
+  display: grid;
+  min-width: 0;
+  color: #28271f;
 }
-.design-companion img { width: min(6rem, 25%); height: auto; }
+.design-companion picture, .design-companion img { display: block; width: 100%; height: auto; }
+.design-companion-label { display: grid; gap: .35rem; }
+.design-companion-label small { font-size: .875rem; }
+.design-companion-label strong {
+  font-size: clamp(1.05rem, 1.55vw, 1.4rem);
+  line-height: 1.3;
+  letter-spacing: -.055em;
+}
+.design-companion:hover .design-companion-label strong {
+  text-decoration: underline;
+  text-underline-offset: .22em;
+}
+@media (min-width: 62.001rem) {
+  .design-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); reading-flow: grid-rows; }
+  .design-piece { display: contents; }
+  .design-feature { grid-column: span 2; grid-row: 1; }
+  .design-companion { grid-column: span 3; grid-row: 2; }
+  .design-companion picture, .design-companion-label { grid-area: 1 / 1; }
+  .design-companion-label {
+    position: relative;
+    align-self: end;
+    justify-self: start;
+    margin: clamp(1rem, 1.65vw, 1.55rem);
+  }
+}
+@media (min-width: 70rem) and (max-height: 50rem) {
+  .design-feature img { aspect-ratio: 16 / 9; object-fit: cover; object-position: 50% 20%; }
+  .design-caption { padding-block: .55rem .7rem; }
+}
+@media (max-width: 62rem) {
+  .design-piece { display: grid; gap: .75rem; }
+  .design-companion-label { padding-block: .75rem .2rem; gap: .2rem; }
+}
+@media (min-width: 36.001rem) and (max-width: 62rem) {
+  .design-piece:last-child { grid-column: 1 / -1; }
+  .design-piece:last-child .design-feature {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: var(--work-gap);
+  }
+}
 #design a:focus-visible { outline: 2px solid #68512f; outline-offset: 3px; }
 #design-viewer {
   --bar-height: 3.5rem;
