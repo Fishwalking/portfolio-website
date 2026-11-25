@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let isScrolling = false;
   let touchStartX = null;
   let touchStartY = null;
+  let swipeCanAdvance = false;
 
   for (const edge of ["header", "footer"]) {
     const bar = document.querySelector(`.${edge}`);
@@ -118,28 +119,54 @@ document.addEventListener("DOMContentLoaded", () => {
     return direction > 0 ? scrollTop + clientHeight < scrollHeight - 1 : scrollTop > 1;
   }
 
+  function isReadingSection(section) {
+    if (section?.id === "index") return true;
+    return section === onsemiroSection && !!section?.querySelector(
+      '#tab-packaging[aria-selected="true"], #tab-concept[aria-selected="true"]'
+    );
+  }
+
+  // Wheel events have no gesture-end signal. Keep a burst and its momentum together.
+  const wheelIdleMs = 150;
+  let lastWheelTime = -Infinity;
+  let wheelHandled = false;
+  let bottomWheelPixels = 0;
+
   window.addEventListener(
     "wheel",
     (e) => {
-      if (isAnyModalOpen() || isScrolling || e.ctrlKey) return;
+      if (e.timeStamp - lastWheelTime > wheelIdleMs) {
+        wheelHandled = false;
+        bottomWheelPixels = 0;
+      }
+      lastWheelTime = e.timeStamp;
+      if (isScrolling || e.ctrlKey || isAnyModalOpen()) {
+        wheelHandled = true;
+        return;
+      }
+      if (wheelHandled || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
 
       const section = sections[currentIndex];
-      if (section?.id === "index") return;
-      if (section === onsemiroSection) {
-        const tab = section.querySelector('[role="tab"][aria-selected="true"]');
-        if (["packaging", "concept"].includes(tab?.getAttribute("aria-controls"))) return;
-      }
-
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        if (section?.contains(e.target) && canScrollSection(e.deltaY)) return;
-        if (e.deltaY > 5) {
-          scrollToSection(currentIndex + 1);
-        } else if (e.deltaY < -5) {
-          scrollToSection(currentIndex - 1);
+      if (!section) return;
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? section.clientHeight : 1;
+      const deltaPixels = e.deltaY * unit;
+      if (isReadingSection(section)) {
+        if (!section.contains(e.target) || e.deltaY <= 0 || canScrollSection(1)) {
+          wheelHandled = true;
+          return;
         }
+        bottomWheelPixels += deltaPixels;
+        if (bottomWheelPixels < 12) return;
+      } else {
+        if (section.contains(e.target) && canScrollSection(e.deltaY)) return;
+        if (Math.abs(deltaPixels) <= 5) return;
       }
+      wheelHandled = true;
+      if (e.cancelable) e.preventDefault();
+      scrollToSection(currentIndex + Math.sign(e.deltaY));
     },
-    { passive: true }
+    // Inspect the starting position before the compositor applies this wheel delta.
+    { passive: false }
   );
 
   window.addEventListener("keydown", (e) => {
@@ -174,10 +201,13 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "touchstart",
     (e) => {
-      if (isAnyModalOpen()) return;
+      touchStartX = null;
+      if (isAnyModalOpen() || isScrolling || e.touches.length !== 1) return;
       const t = e.changedTouches[0];
       touchStartX = t.clientX;
       touchStartY = t.clientY;
+      const section = sections[currentIndex];
+      swipeCanAdvance = isReadingSection(section) && section.contains(e.target) && !canScrollSection(1);
     },
     { passive: true }
   );
@@ -191,11 +221,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
         if (dx < 0) scrollToSection(currentIndex + 1);
         else scrollToSection(currentIndex - 1);
+      } else if (swipeCanAdvance && -dy > Math.max(50, Math.abs(dx)) && !canScrollSection(1)) {
+        scrollToSection(currentIndex + 1);
       }
       touchStartX = touchStartY = null;
     },
     { passive: true }
   );
+  window.addEventListener("touchcancel", () => { touchStartX = touchStartY = null; });
 
   navLinks.forEach((link) =>
     link.addEventListener("click", (e) => {
