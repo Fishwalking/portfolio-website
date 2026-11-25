@@ -6,7 +6,7 @@
     <title>이준석 포트폴리오</title>
     <meta name="theme-color" content="#121212" />
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/MagicBento.css" />
+    <link rel="stylesheet" href="css/projects.css" />
     <link rel="stylesheet" href="css/darkveil.css" />
     <link
       rel="stylesheet"
@@ -341,9 +341,46 @@
         class="full-page-section dark-bg"
         aria-label="작업물"
       >
-        <div class="section-content fade-in-up">
+        <div class="project-content">
           <h2>Project</h2>
-          <div id="magic-bento-root" aria-live="polite"></div>
+          <ul class="project-grid" aria-label="영상 프로젝트">
+            <li>
+              <a class="project-card" href="https://www.youtube.com/watch?v=tViL1sLDWIA" data-project-video target="_blank" rel="noopener noreferrer" aria-label="공모전 · 영상 재생">
+                <img src="img/projects/tViL1sLDWIA.webp" width="960" height="540" loading="lazy" alt="">
+                <span class="project-caption"><span class="project-name">공모전</span><span class="project-action" aria-hidden="true">▶</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="project-card" href="https://www.youtube.com/watch?v=rBSmqB4-ZF4" data-project-video target="_blank" rel="noopener noreferrer" aria-label="타이포 그래픽 카피 · 영상 재생">
+                <img src="img/projects/rBSmqB4-ZF4.webp" width="960" height="540" loading="lazy" alt="">
+                <span class="project-caption"><span class="project-name">타이포 그래픽 카피</span><span class="project-action" aria-hidden="true">▶</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="project-card" href="https://www.youtube.com/watch?v=qqBSvR9t_J4" data-project-video target="_blank" rel="noopener noreferrer" aria-label="화산의 꿈 여행 · 영상 재생">
+                <img src="img/projects/qqBSvR9t_J4.webp" width="960" height="540" loading="lazy" alt="">
+                <span class="project-caption"><span class="project-name">화산의 꿈 여행</span><span class="project-action" aria-hidden="true">▶</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="project-card" href="https://drive.google.com/file/d/1v_Nn6w6cLHXaTJipZgnF1cnntW_PYGqj/view?usp=sharing" target="_blank" rel="noopener noreferrer" aria-label="Wedding · Google Drive에서 열기">
+                <img src="img/wedding.png" width="960" height="540" loading="lazy" alt="">
+                <span class="project-caption"><span class="project-name">Wedding</span><span class="project-action" aria-hidden="true">Drive</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="project-card" href="https://www.youtube.com/watch?v=NQULd4sUY_M" data-project-video target="_blank" rel="noopener noreferrer" aria-label="온세미로 · 영상 재생">
+                <img src="img/projects/NQULd4sUY_M.webp" width="960" height="540" loading="lazy" alt="">
+                <span class="project-caption"><span class="project-name">온세미로</span><span class="project-action" aria-hidden="true">▶</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="project-card" href="https://www.youtube.com/watch?v=u-Az92pscTA" data-project-video target="_blank" rel="noopener noreferrer" aria-label="인터뷰 · 영상 재생">
+                <img src="img/projects/u-Az92pscTA.webp" width="960" height="540" loading="lazy" alt="">
+                <span class="project-caption"><span class="project-name">인터뷰</span><span class="project-action" aria-hidden="true">▶</span></span>
+              </a>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -424,18 +461,18 @@
     <footer class="footer" role="contentinfo">
       <p>This website for portfolio purposes.</p>
     </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <dialog id="project-player" aria-labelledby="project-player-title">
+      <header class="player-toolbar">
+        <h2 id="project-player-title"></h2>
+        <form method="dialog"><button type="submit" aria-label="영상 닫기" autofocus>닫기</button></form>
+      </header>
+      <div class="project-screen"></div>
+      <a class="project-original" target="_blank" rel="noopener noreferrer">YouTube에서 보기</a>
+    </dialog>
     <script src="js/script.js" defer></script>
     <script src="js/site-patch.js" defer></script>
     <script type="module" src="js/darkveil.js"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script
-      type="text/babel"
-      data-presets="env,react"
-      src="js/magic-bento.jsx"
-    ></script>
+    <script defer src="js/project-player.js"></script>
     <div id="image-lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption" style="display: none">
       <button type="button" class="lightbox-close" aria-label="확대 이미지 닫기">&times;</button>
       <div class="lightbox-content">

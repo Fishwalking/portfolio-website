@@ -22,6 +22,16 @@ document.addEventListener("DOMContentLoaded", () => {
   let touchStartX = null;
   let touchStartY = null;
 
+  for (const edge of ["header", "footer"]) {
+    const bar = document.querySelector(`.${edge}`);
+    if (!bar) continue;
+    const syncHeight = () => document.documentElement.style.setProperty(
+      `--site-${edge}-height`, `${bar.offsetHeight}px`
+    );
+    syncHeight();
+    new ResizeObserver(syncHeight).observe(bar);
+  }
+
   if (container && sections.length) {
     container.style.width = `${sections.length * 100}vw`;
   }
@@ -98,12 +108,13 @@ document.addEventListener("DOMContentLoaded", () => {
       !!document.getElementById("image-lightbox") &&
       getComputedStyle(document.getElementById("image-lightbox")).display !==
         "none";
-    return isTrailerModalOpen || isImageLightboxOpen;
+    return isTrailerModalOpen || isImageLightboxOpen || !!document.querySelector("#project-player[open]");
   };
 
-  function canScrollProject(direction) {
-    if (!onsemiroSection || sections[currentIndex] !== onsemiroSection) return false;
-    const { scrollTop, clientHeight, scrollHeight } = onsemiroSection;
+  function canScrollSection(direction) {
+    const section = sections[currentIndex];
+    if (!section || !section.matches("#onsemiro, #project")) return false;
+    const { scrollTop, clientHeight, scrollHeight } = section;
     return direction > 0 ? scrollTop + clientHeight < scrollHeight - 1 : scrollTop > 1;
   }
 
@@ -113,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isAnyModalOpen() || isScrolling) return;
 
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        if (onsemiroSection?.contains(e.target) && canScrollProject(e.deltaY)) return;
+        if (sections[currentIndex]?.contains(e.target) && canScrollSection(e.deltaY)) return;
         if (e.deltaY > 5) {
           scrollToSection(currentIndex + 1);
         } else if (e.deltaY < -5) {
@@ -128,9 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isAnyModalOpen() || e.defaultPrevented) return;
     if (e.key === "PageDown" || e.key === "PageUp") {
       const direction = e.key === "PageDown" ? 1 : -1;
-      if (canScrollProject(direction)) {
+      if (canScrollSection(direction)) {
         e.preventDefault();
-        onsemiroSection.scrollBy(0, direction * onsemiroSection.clientHeight * .75);
+        const section = sections[currentIndex];
+        section.scrollBy(0, direction * section.clientHeight * .75);
         return;
       }
     }
@@ -343,16 +355,6 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   function initializeOnsemiroSection() {
     if (!onsemiroSection) return;
-
-    for (const edge of ["header", "footer"]) {
-      const bar = document.querySelector(`.${edge}`);
-      if (!bar) continue;
-      const syncHeight = () => onsemiroSection.style.setProperty(
-        `--site-${edge}-height`, `${bar.offsetHeight}px`
-      );
-      syncHeight();
-      new ResizeObserver(syncHeight).observe(bar);
-    }
 
     const tabButtons = Array.from(onsemiroSection.querySelectorAll('[role="tab"]'));
     function selectTab(button) {
