@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>이준석 포트폴리오</title>
     <meta name="theme-color" content="#121212" />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/projects.css" />
+    <link rel="stylesheet" href="css/style.css?v=design-gallery" />
+    <link rel="stylesheet" href="css/projects.css?v=design-gallery" />
     <link rel="stylesheet" href="css/darkveil.css" />
     <link
       rel="stylesheet"
@@ -397,33 +397,45 @@
       >
         <div class="work-content">
           <h2 class="work-title">디자인 작업물</h2>
-          <p class="work-summary">다양한 컨셉의 시각 디자인 작업물입니다.</p>
-          <div class="design-controls" role="group" aria-label="디자인 슬라이드 탐색">
-            <button type="button" class="design-prev-btn" aria-label="이전 디자인 슬라이드" aria-controls="design-slides">‹</button>
-            <button type="button" class="design-next-btn" aria-label="다음 디자인 슬라이드" aria-controls="design-slides">›</button>
-          </div>
-          <div class="design-slider-container">
-            <div class="design-slider-track" id="design-slides">
-              <div class="design-slide">
-                <div class="design-item">
-                  <img src="img/Design 1.png" width="709" height="851" alt="디자인 1" loading="lazy">
+          <div class="design-grid">
+            <article class="design-piece">
+              <a class="design-feature" href="img/Design 1.png" data-art-title="글렌체크 · 60’s Cardin" aria-label="글렌체크 · 60’s Cardin 원본 보기">
+                <img src="img/design/glencheck-art.webp" width="768" height="576" alt="회색빛 계단과 붉은 60’s Cardin 타이포그래피를 조합한 글렌체크 앨범 아트워크" loading="lazy">
+                <div class="design-caption">
+                  <p>글렌체크 앨범 아트워크</p>
+                  <h3 lang="en">60’s Cardin</h3>
+                  <span class="design-open">원본 보기</span>
                 </div>
-                <div class="design-item">
-                  <img src="img/Design 1-mockup.png" width="4500" height="3000" alt="디자인 1 목업" loading="lazy">
+              </a>
+              <a class="design-companion" href="img/Design 1-mockup.png" data-art-title="글렌체크 · 60’s Cardin · LP 패키지 목업" aria-label="글렌체크 · 60’s Cardin LP 패키지 목업 원본 보기">
+                <img src="img/design/glencheck-vinyl.webp" width="1040" height="780" alt="분홍빛 배경에 앨범 슬리브 두 장과 검정 LP를 놓은 목업" loading="lazy">
+                <span>LP 패키지 목업</span>
+              </a>
+            </article>
+            <article class="design-piece">
+              <a class="design-feature" href="img/Design 2.png" data-art-title="카르페 디엠" aria-label="카르페 디엠 원본 보기">
+                <img src="img/design/carpe-diem-art.webp" width="1040" height="780" alt="붉은 천체 앞 산등성이에 서 있는 인물과 여러 언어로 쓴 카르페 디엠 포스터" loading="lazy">
+                <div class="design-caption">
+                  <p>타이포그래피 포스터</p>
+                  <h3>카르페 디엠</h3>
+                  <span class="design-open">원본 보기</span>
                 </div>
-                <div class="design-item">
-                  <img src="img/Design 2.png" width="2482" height="3508" alt="디자인 2" loading="lazy">
+              </a>
+              <a class="design-companion" href="img/Design 2-mockup.png" data-art-title="카르페 디엠 · 인쇄 포스터 목업" aria-label="카르페 디엠 인쇄 포스터 목업 원본 보기">
+                <img src="img/design/carpe-diem-print.webp" width="1040" height="780" alt="카르페 디엠 인쇄 포스터 두 장을 겹치고 종이 끝을 말아 올린 목업" loading="lazy">
+                <span>인쇄 포스터 목업</span>
+              </a>
+            </article>
+            <article class="design-piece">
+              <a class="design-feature" href="img/Design 3.jpg" data-art-title="침묵과 빛" aria-label="침묵과 빛 원본 보기">
+                <img src="img/design/louis-kahn.webp" width="1040" height="780" alt="콘크리트 건축 사이로 해가 지는 솔크 연구소를 담은 침묵과 빛 포스터" loading="lazy">
+                <div class="design-caption">
+                  <p>루이스 칸 건축 포스터</p>
+                  <h3>침묵과 빛</h3>
+                  <span class="design-open">원본 보기</span>
                 </div>
-              </div>
-              <div class="design-slide">
-                <div class="design-item">
-                  <img src="img/Design 2-mockup.png" width="4000" height="3000" alt="디자인 2 목업" loading="lazy">
-                </div>
-                <div class="design-item">
-                  <img src="img/Design 3.jpg" width="2472" height="1870" alt="디자인 3" loading="lazy">
-                </div>
-              </div>
-            </div>
+              </a>
+            </article>
           </div>
         </div>
       </section>
@@ -467,7 +479,23 @@
       <div class="project-screen"></div>
       <a class="project-original" target="_blank" rel="noopener noreferrer">YouTube에서 보기</a>
     </dialog>
-    <script src="js/script.js" defer></script>
+    <dialog id="design-viewer" aria-labelledby="design-viewer-title">
+      <header class="design-viewer-bar">
+        <h2 id="design-viewer-title"></h2>
+        <form method="dialog"><button type="submit" autofocus>닫기</button></form>
+      </header>
+      <div class="design-viewer-image"><img alt=""></div>
+      <footer class="design-viewer-bar">
+        <a class="design-original" target="_blank" rel="noopener noreferrer">원본 파일 열기</a>
+        <div class="design-pages" role="group" aria-label="작품 탐색">
+          <button type="button" data-step="-1">이전</button>
+          <span aria-live="polite"></span>
+          <button type="button" data-step="1">다음</button>
+        </div>
+      </footer>
+    </dialog>
+    <script src="js/script.js?v=design-gallery" defer></script>
+    <script src="js/design-viewer.js" defer></script>
     <script src="js/site-patch.js" defer></script>
     <script type="module" src="js/darkveil.js"></script>
     <script defer src="js/project-player.js"></script>
@@ -476,13 +504,6 @@
       <div class="lightbox-content">
         <img src="" alt="확대 이미지" id="lightbox-img" />
         <div id="lightbox-caption"></div>
-        <div id="design-image-lightbox" class="lightbox" style="display: none">
-          <span class="lightbox-close">&times;</span>
-          <div class="lightbox-content">
-            <img src="" alt="확대 디자인 이미지" id="design-lightbox-img" />
-            <div id="design-lightbox-caption"></div>
-          </div>
-        </div>
       </div>
     </div>
   </body>
