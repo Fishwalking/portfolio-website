@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sections = Array.from(document.querySelectorAll(".full-page-section"));
   const navLinks = document.querySelectorAll(".nav-links a");
   const modalOverlay = document.getElementById("modal-overlay");
-  const detailPageModal = document.getElementById("detail-page-modal");
+  const onsemiroSection = document.getElementById("onsemiro");
 
   const fadeInElements = sections.map((section) =>
     section.querySelectorAll(".fade-in-up")
@@ -71,16 +71,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const initialHash = location.hash;
   const initialIndex = indexByHash(initialHash);
-  if (initialHash && initialIndex !== -1) {
-    const oldTransition = container?.style.transition;
-    if (container) container.style.transition = "none";
-
-    requestAnimationFrame(() => {
-      scrollToSection(initialIndex, false);
-      if (container)
-        container.style.transition =
-          oldTransition || "transform .8s ease-in-out";
-    });
+  if (container && initialIndex !== -1) {
+    currentIndex = initialIndex;
+    container.style.transition = "none";
+    container.style.transform = `translateX(-${initialIndex * 100}vw)`;
+    animateVisible();
+    updateCurrentNav();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      container.style.removeProperty("transition");
+    }));
   } else if (sections[0]) {
     history.replaceState(null, "", `#${sections[0].id}`);
     animateVisible();
@@ -95,14 +94,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const isAnyModalOpen = () => {
     const isTrailerModalOpen =
       !!modalOverlay && getComputedStyle(modalOverlay).display !== "none";
-    const isDetailModalOpen =
-      !!detailPageModal && getComputedStyle(detailPageModal).display !== "none";
     const isImageLightboxOpen =
       !!document.getElementById("image-lightbox") &&
       getComputedStyle(document.getElementById("image-lightbox")).display !==
         "none";
-    return isTrailerModalOpen || isDetailModalOpen || isImageLightboxOpen;
+    return isTrailerModalOpen || isImageLightboxOpen;
   };
+
+  function canScrollProject(direction) {
+    if (!onsemiroSection || sections[currentIndex] !== onsemiroSection) return false;
+    const { scrollTop, clientHeight, scrollHeight } = onsemiroSection;
+    return direction > 0 ? scrollTop + clientHeight < scrollHeight - 1 : scrollTop > 1;
+  }
 
   window.addEventListener(
     "wheel",
@@ -110,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isAnyModalOpen() || isScrolling) return;
 
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        if (onsemiroSection?.contains(e.target) && canScrollProject(e.deltaY)) return;
         if (e.deltaY > 5) {
           scrollToSection(currentIndex + 1);
         } else if (e.deltaY < -5) {
@@ -121,7 +125,15 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   window.addEventListener("keydown", (e) => {
-    if (isAnyModalOpen()) return;
+    if (isAnyModalOpen() || e.defaultPrevented) return;
+    if (e.key === "PageDown" || e.key === "PageUp") {
+      const direction = e.key === "PageDown" ? 1 : -1;
+      if (canScrollProject(direction)) {
+        e.preventDefault();
+        onsemiroSection.scrollBy(0, direction * onsemiroSection.clientHeight * .75);
+        return;
+      }
+    }
     if (["ArrowRight", "PageDown"].includes(e.key)) {
       e.preventDefault();
       scrollToSection(currentIndex + 1);
@@ -330,87 +342,69 @@ document.addEventListener("DOMContentLoaded", () => {
    * 온세미로 섹션 기능 초기화 (탭, 슬라이더, 라이트박스)
    */
   function initializeOnsemiroSection() {
-    const onsemiroSection = document.getElementById("onsemiro");
     if (!onsemiroSection) return;
 
-    // --- 탭 전환 로직 ---
-    const tabButtons = onsemiroSection.querySelectorAll(".tab-btn");
-    const tabContents = onsemiroSection.querySelectorAll(".tab-content");
-    tabButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const targetId = button.dataset.target;
-        tabButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
-        tabContents.forEach((content) => {
-          content.classList.remove("active");
-          if (content.id === targetId) {
-            content.classList.add("active");
-          }
-        });
-      });
-    });
+    for (const edge of ["header", "footer"]) {
+      const bar = document.querySelector(`.${edge}`);
+      if (!bar) continue;
+      const syncHeight = () => onsemiroSection.style.setProperty(
+        `--site-${edge}-height`, `${bar.offsetHeight}px`
+      );
+      syncHeight();
+      new ResizeObserver(syncHeight).observe(bar);
+    }
 
-    // --- 각 탭의 슬라이더 초기화 ---
-    const sliders = onsemiroSection.querySelectorAll(".photo-slider-container");
-    sliders.forEach((sliderContainer) => {
-      const track = sliderContainer.querySelector(".photo-slider-track");
-      const prevBtn = sliderContainer.querySelector(".photo-prev-btn");
-      const nextBtn = sliderContainer.querySelector(".photo-next-btn");
-      if (!track || !prevBtn || !nextBtn) return;
-
-      const items = Array.from(track.children);
-      if (items.length <= 4) {
-        prevBtn.style.display = "none";
-        nextBtn.style.display = "none";
-        return;
-      }
-
-      let currentIndex = 0;
-      const itemsVisible = 4;
-
-      function updateSliderPosition() {
-        // 한 번에 한 아이템 너비만큼 이동
-        const itemWidthPercent = 100 / items.length;
-        track.style.transform = `translateX(-${
-          currentIndex * itemWidthPercent * itemsVisible
-        }%)`;
-      }
-
-      nextBtn.addEventListener("click", () => {
-        if (currentIndex < items.length - itemsVisible) {
-          currentIndex++;
-          updateSliderPosition();
-        }
-      });
-      prevBtn.addEventListener("click", () => {
-        if (currentIndex > 0) {
-          currentIndex--;
-          updateSliderPosition();
-        }
-      });
-    });
-
-    // --- '상세페이지' 탭 라이트박스 로직 ---
-    const detailSlider = onsemiroSection.querySelector(".detail-slider");
-    const closeDetailModalBtn =
-      detailPageModal?.querySelector(".lightbox-close");
-
-    if (detailSlider && detailPageModal) {
-      detailSlider.addEventListener("click", () => {
-        detailPageModal.style.display = "flex";
-      });
-
-      const closeModal = () => (detailPageModal.style.display = "none");
-      closeDetailModalBtn?.addEventListener("click", closeModal);
-      detailPageModal.addEventListener("click", (e) => {
-        if (e.target === detailPageModal) closeModal();
-      });
-      window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && detailPageModal.style.display === "flex") {
-          closeModal();
-        }
+    const tabButtons = Array.from(onsemiroSection.querySelectorAll('[role="tab"]'));
+    function selectTab(button) {
+      tabButtons.forEach((tab) => {
+        const selected = tab === button;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        document.getElementById(tab.getAttribute("aria-controls")).hidden = !selected;
       });
     }
+    tabButtons.forEach((button, index) => {
+      button.addEventListener("click", () => selectTab(button));
+      button.addEventListener("keydown", (event) => {
+        const last = tabButtons.length - 1;
+        const destinations = {
+          ArrowRight: index === last ? 0 : index + 1,
+          ArrowLeft: index === 0 ? last : index - 1,
+          Home: 0,
+          End: last,
+        };
+        if (!(event.key in destinations)) return;
+        event.preventDefault();
+        const nextTab = tabButtons[destinations[event.key]];
+        selectTab(nextTab);
+        nextTab.focus();
+      });
+    });
+
+    const narrow = matchMedia("(max-width: 768px)");
+    onsemiroSection.querySelectorAll(".photo-slider-container").forEach((slider) => {
+      const track = slider.querySelector(".photo-slider-track");
+      const previous = slider.querySelector(".photo-prev-btn");
+      const next = slider.querySelector(".photo-next-btn");
+      const slides = Array.from(track.children);
+      let first = 0;
+
+      function show(index) {
+        const visibleCount = narrow.matches ? 2 : 4;
+        const last = Math.max(0, slides.length - visibleCount);
+        first = Math.max(0, Math.min(last, index));
+        track.style.transform = `translateX(-${first * 100 / visibleCount}%)`;
+        previous.disabled = first === 0;
+        next.disabled = first === last;
+        slides.forEach((slide, i) => {
+          slide.tabIndex = i >= first && i < first + visibleCount ? 0 : -1;
+        });
+      }
+      previous.addEventListener("click", () => show(first - 1));
+      next.addEventListener("click", () => show(first + 1));
+      narrow.addEventListener("change", () => show(first));
+      show(first);
+    });
 
     // --- '패키징' & '컨셉' 탭 이미지 확대 라이트박스 로직 ---
     const imageLightbox = document.getElementById("image-lightbox");
@@ -424,10 +418,14 @@ document.addEventListener("DOMContentLoaded", () => {
         "#packaging .photo-item, #concept .photo-item"
       );
 
+      let opener;
       const openLightbox = (imgElement) => {
+        opener = imgElement.closest("button");
         lightboxImg.src = imgElement.src;
+        lightboxImg.alt = imgElement.alt;
         lightboxCaption.textContent = imgElement.alt;
         imageLightbox.style.display = "flex";
+        closeImageLightboxBtn.focus();
       };
 
       imagesToZoom.forEach((item) => {
@@ -438,14 +436,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-      const closeLightbox = () => (imageLightbox.style.display = "none");
+      const closeLightbox = () => {
+        imageLightbox.style.display = "none";
+        opener?.focus({ preventScroll: true });
+      };
       closeImageLightboxBtn?.addEventListener("click", closeLightbox);
       imageLightbox.addEventListener("click", (e) => {
         if (e.target === imageLightbox) closeLightbox();
       });
       window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && imageLightbox.style.display === "flex") {
-          closeLightbox();
+        if (imageLightbox.style.display !== "flex") return;
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "Tab") {
+          e.preventDefault();
+          closeImageLightboxBtn.focus();
         }
       });
     }

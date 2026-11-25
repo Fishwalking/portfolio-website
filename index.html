@@ -222,245 +222,113 @@
         </div>
       </section>
 
-      <section
-        id="onsemiro"
-        class="full-page-section"
-        aria-label="온새미로"
-        style="position: relative; overflow: hidden"
-      >
-        <div
-          class="video-background-wrapper"
-          style="
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-          "
-        >
-          <iframe
-            src="https://www.youtube.com/embed/NQULd4sUY_M?autoplay=1&mute=1&loop=1&playlist=NQULd4sUY_M&controls=0"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            title="Onsemiro 배경 영상"
-            style="
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              min-width: 100%;
-              min-height: 100%;
-              width: 177.77vh;
-              height: 56.25vw;
-            "
-          ></iframe>
-          <div
-            class="video-overlay"
-            style="
-              background-color: rgba(0, 0, 0, 0.4);
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-            "
-          ></div>
-        </div>
-        <div class="section-content" style="position: relative; z-index: 1">
-          <h2
-            class="fade-in-up"
-            style="color: white; font-size: 2.8rem; font-weight: 700"
-          >
-            Onsemiro: Total Branding Project
-          </h2>
-          <p
-            class="fade-in-up"
-            style="color: #e0e0e0; font-size: 1.2rem; line-height: 1.6"
-          >
-            <strong>브랜드 기획</strong>부터 <strong>패키징</strong>,
-            <strong>광고</strong>, 그리고
-            <strong>상세페이지 제작</strong>까지,<br />
-            '온새미로'의 모든 것을 담아낸 종합 브랜딩 프로젝트입니다.
-          </p>
-
+      <section id="onsemiro" class="full-page-section" aria-labelledby="onsemiro-title">
+        <div class="onsemiro-project">
+          <header class="onsemiro-intro">
+            <div>
+              <p class="onsemiro-category" lang="en">Korean whisky</p>
+              <h2 id="onsemiro-title">온세미로</h2>
+            </div>
+            <p class="onsemiro-scope">한국 위스키 브랜드 온세미로의 기획, 패키지, 광고 영상과 제품 상세페이지를 디자인했습니다.</p>
+          </header>
           <div class="onsemiro-tab-container">
-            <nav class="tab-nav">
-              <button class="tab-btn active" data-target="plan">기획서</button>
-              <button class="tab-btn" data-target="videos">영상</button>
-              <button class="tab-btn" data-target="details">상세페이지</button>
-              <button class="tab-btn" data-target="packaging">패키징</button>
-              <button class="tab-btn" data-target="concept">컨셉</button>
-            </nav>
+            <div class="tab-nav" role="tablist" aria-label="온세미로 프로젝트 작업물">
+              <button type="button" class="tab-btn" id="tab-plan" role="tab" aria-controls="plan" aria-selected="true">기획서</button>
+              <button type="button" class="tab-btn" id="tab-videos" role="tab" aria-controls="videos" aria-selected="false" tabindex="-1">영상</button>
+              <button type="button" class="tab-btn" id="tab-details" role="tab" aria-controls="details" aria-selected="false" tabindex="-1">상세페이지</button>
+              <button type="button" class="tab-btn" id="tab-packaging" role="tab" aria-controls="packaging" aria-selected="false" tabindex="-1">패키징</button>
+              <button type="button" class="tab-btn" id="tab-concept" role="tab" aria-controls="concept" aria-selected="false" tabindex="-1">컨셉</button>
+            </div>
 
             <div class="tab-content-container">
-              <div id="plan" class="tab-content active">
-                <iframe
+              <div id="plan" class="tab-content" role="tabpanel" aria-labelledby="tab-plan">
+                <iframe title="온세미로 브랜드 기획서" loading="lazy"
                   src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fz1jsczW1nYoqflUh37lJ6q%2F-%25EC%2598%25A8%25EC%2584%25B8%25EB%25AF%25B8%25EB%25A1%259C-%3Fpage-id%3D0%253A1%26node-id%3D23-3%26viewport%3D11275%252C940%252C0.24%26t%3DHYX1ajgBFtaVpXbz-1%26scaling%3Dcontain%26content-scaling%3Dfixed"
                   allowfullscreen
                 ></iframe>
               </div>
 
-              <div id="videos" class="tab-content">
+              <div id="videos" class="tab-content" role="tabpanel" aria-labelledby="tab-videos" hidden>
                 <div class="video-grid">
                   <iframe
                     src="https://www.youtube.com/embed/NQULd4sUY_M"
-                    title="Concept Video"
+                    title="온세미로 브랜드 영상" loading="lazy"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen
                   ></iframe>
                 </div>
               </div>
-              <div id="details" class="tab-content">
-                <div
-                  class="photo-slider-container detail-slider"
-                  title="클릭하여 전체 보기"
-                >
-                  <div class="photo-slider-track">
-                    <div class="photo-item" data-filename="상세페이지 1.png">
-                      <img src="img/상세페이지 1.png" alt="상세페이지 1" />
-                    </div>
-                    <div class="photo-item" data-filename="상세페이지 2.png">
-                      <img src="img/상세페이지 2.png" alt="상세페이지 2" />
-                    </div>
-                    <div class="photo-item" data-filename="상세페이지 3.png">
-                      <img src="img/상세페이지 3.png" alt="상세페이지 3" />
-                    </div>
-                    <div class="photo-item" data-filename="상세페이지 4.png">
-                      <img src="img/상세페이지 4.png" alt="상세페이지 4" />
-                    </div>
-                    <div class="photo-item" data-filename="상세페이지 5.png">
-                      <img src="img/상세페이지 5.png" alt="상세페이지 5" />
-                    </div>
-                    <div class="photo-item" data-filename="상세페이지 6.png">
-                      <img src="img/상세페이지 6.png" alt="상세페이지 6" />
-                    </div>
-                    <div class="photo-item" data-filename="상세페이지 7.png">
-                      <img src="img/상세페이지 7.png" alt="상세페이지 7" />
-                    </div>
-                    <div class="photo-item" data-filename="상세페이지 8.png">
-                      <img src="img/상세페이지 8.png" alt="상세페이지 8" />
-                    </div>
+              <div id="details" class="tab-content" role="tabpanel" aria-labelledby="tab-details" hidden>
+                <article class="onsemiro-feature">
+                  <img class="onsemiro-cover" src="img/onsemiro/cover.webp" alt="검은 배경 위 이끼와 돌 사이에 놓인 온세미로 위스키 병과 두 잔" />
+                  <div class="onsemiro-feature-copy">
+                    <h3>자연 그대로,<br /> 시간을 빚다.</h3>
+                    <p>곡물에서 오크통까지. 온세미로 클래식과 청담에 담긴 시간을 사진과 움직임으로 풀어냈습니다.</p>
+                    <a class="onsemiro-cta" href="onsemiro.html">상세페이지 전체 보기</a>
                   </div>
-                  <button class="slider-btn photo-prev-btn">＜</button>
-                  <button class="slider-btn photo-next-btn">＞</button>
-                </div>
+                </article>
               </div>
-              <div id="detail-page-modal" class="lightbox">
-                <div class="detail-modal-content">
-                  <span class="lightbox-close">&times;</span>
-                  <img src="img/상세페이지 1.png" alt="상세페이지 1" />
-                  <img src="img/상세페이지 2.png" alt="상세페이지 2" />
-
-                  <div class="image-container">
-                    <img src="img/상세페이지 3.png" alt="상세페이지 3" />
-                    <img
-                      src="img/위스키-목.gif"
-                      alt="위스키 따르는 GIF"
-                      class="overlay-gif"
-                      id="whiskey-gif"
-                    />
-                  </div>
-
-                  <div class="image-container">
-                    <img src="img/상세페이지 4.png" alt="상세페이지 4" />
-                    <img
-                      src="img/쌀.gif"
-                      alt="떨어지는 쌀 GIF"
-                      class="overlay-gif"
-                      id="rice-gif"
-                    />
-
-                    <img
-                      src="img/time.gif"
-                      alt="시간 GIF"
-                      class="overlay-gif"
-                      id="time-gif"
-                    />
-                  </div>
-                  <img src="img/상세페이지 5.png" alt="상세페이지 5" />
-                  <img src="img/상세페이지 6.png" alt="상세페이지 6" />
-                  <img src="img/상세페이지 7.png" alt="상세페이지 7" />
-                  <img src="img/상세페이지 8.png" alt="상세페이지 8" />
-                </div>
-              </div>
-
-              <div id="packaging" class="tab-content">
+              <div id="packaging" class="tab-content" role="tabpanel" aria-labelledby="tab-packaging" hidden>
                 <div class="photo-slider-container packaging-slider">
                   <div class="photo-slider-track">
-                    <div
-                      class="photo-item"
-                      data-filename="packaging_classic_front.png"
-                    >
-                      <img
+                    <button type="button" class="photo-item">
+                      <img loading="lazy"
                         src="img/packaging_classic_front.png"
                         alt="패키징 앞면"
                       />
-                    </div>
-                    <div
-                      class="photo-item"
-                      data-filename="packaging_classic_bottle.png"
-                    >
-                      <img
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy"
                         src="img/packaging_classic_bottle.png"
                         alt="패키징 용기"
                       />
-                    </div>
-                    <div
-                      class="photo-item"
-                      data-filename="packaging_classic_back.png"
-                    >
-                      <img
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy"
                         src="img/packaging_classic_back.png"
                         alt="패키징 뒷면"
                       />
-                    </div>
-                    <div
-                      class="photo-item"
-                      data-filename="Packaging Deployment Chart 1.png"
-                    >
-                      <img
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy"
                         src="img/Packaging Deployment Chart 1.png"
                         alt="패키징 전개도 1"
                       />
-                    </div>
-                    <div
-                      class="photo-item"
-                      data-filename="Packaging Deployment Chart 2.png"
-                    >
-                      <img
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy"
                         src="img/Packaging Deployment Chart 2.png"
                         alt="패키징 전개도 2"
                       />
-                    </div>
+                    </button>
                   </div>
-                  <button class="slider-btn photo-prev-btn">＜</button>
-                  <button class="slider-btn photo-next-btn">＞</button>
+                  <button type="button" class="slider-btn photo-prev-btn" aria-label="이전 이미지">＜</button>
+                  <button type="button" class="slider-btn photo-next-btn" aria-label="다음 이미지">＞</button>
                 </div>
               </div>
 
-              <div id="concept" class="tab-content">
+              <div id="concept" class="tab-content" role="tabpanel" aria-labelledby="tab-concept" hidden>
                 <div class="photo-slider-container concept-slider">
                   <div class="photo-slider-track">
-                    <div class="photo-item" data-filename="Concept shot_1.png">
-                      <img src="img/Concept shot_1.png" alt="콘셉트샷 1" />
-                    </div>
-                    <div class="photo-item" data-filename="Concept shot_2.png">
-                      <img src="img/Concept shot_2.png" alt="콘셉트샷 2" />
-                    </div>
-                    <div class="photo-item" data-filename="Concept shot_3.png">
-                      <img src="img/Concept shot_3.png" alt="콘셉트샷 3" />
-                    </div>
-                    <div class="photo-item" data-filename="Concept shot_4.png">
-                      <img src="img/Concept shot_4.png" alt="콘셉트샷 4" />
-                    </div>
-                    <div class="photo-item" data-filename="Concept shot_5.png">
-                      <img src="img/Concept shot_5.png" alt="콘셉트샷 5" />
-                    </div>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy" src="img/Concept shot_1.png" alt="콘셉트샷 1" />
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy" src="img/Concept shot_2.png" alt="콘셉트샷 2" />
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy" src="img/Concept shot_3.png" alt="콘셉트샷 3" />
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy" src="img/Concept shot_4.png" alt="콘셉트샷 4" />
+                    </button>
+                    <button type="button" class="photo-item">
+                      <img loading="lazy" src="img/Concept shot_5.png" alt="콘셉트샷 5" />
+                    </button>
                   </div>
-                  <button class="slider-btn photo-prev-btn">＜</button>
-                  <button class="slider-btn photo-next-btn">＞</button>
+                  <button type="button" class="slider-btn photo-prev-btn" aria-label="이전 이미지">＜</button>
+                  <button type="button" class="slider-btn photo-next-btn" aria-label="다음 이미지">＞</button>
                 </div>
               </div>
             </div>
@@ -568,8 +436,8 @@
       data-presets="env,react"
       src="js/magic-bento.jsx"
     ></script>
-    <div id="image-lightbox" class="lightbox" style="display: none">
-      <span class="lightbox-close">&times;</span>
+    <div id="image-lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption" style="display: none">
+      <button type="button" class="lightbox-close" aria-label="확대 이미지 닫기">&times;</button>
       <div class="lightbox-content">
         <img src="" alt="확대 이미지" id="lightbox-img" />
         <div id="lightbox-caption"></div>
