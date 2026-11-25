@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function canScrollSection(direction) {
     const section = sections[currentIndex];
-    if (!section || !section.matches("#onsemiro, #project, #design")) return false;
+    if (!section || !section.matches("#index, #onsemiro, #project, #design")) return false;
     const { scrollTop, clientHeight, scrollHeight } = section;
     return direction > 0 ? scrollTop + clientHeight < scrollHeight - 1 : scrollTop > 1;
   }
@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isAnyModalOpen() || isScrolling || e.ctrlKey) return;
 
       const section = sections[currentIndex];
+      if (section?.id === "index") return;
       if (section === onsemiroSection) {
         const tab = section.querySelector('[role="tab"][aria-selected="true"]');
         if (["packaging", "concept"].includes(tab?.getAttribute("aria-controls"))) return;
