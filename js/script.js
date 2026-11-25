@@ -121,10 +121,16 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "wheel",
     (e) => {
-      if (isAnyModalOpen() || isScrolling) return;
+      if (isAnyModalOpen() || isScrolling || e.ctrlKey) return;
+
+      const section = sections[currentIndex];
+      if (section === onsemiroSection) {
+        const tab = section.querySelector('[role="tab"][aria-selected="true"]');
+        if (["packaging", "concept"].includes(tab?.getAttribute("aria-controls"))) return;
+      }
 
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        if (sections[currentIndex]?.contains(e.target) && canScrollSection(e.deltaY)) return;
+        if (section?.contains(e.target) && canScrollSection(e.deltaY)) return;
         if (e.deltaY > 5) {
           scrollToSection(currentIndex + 1);
         } else if (e.deltaY < -5) {
