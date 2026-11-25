@@ -987,3 +987,136 @@ body.lb-open .sections {
   background-color: transparent;
   border-color: #007bff;
 }
+
+/* 온세미로 선물 패키지 */
+#packaging .package-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.25rem 3rem;
+  margin: 0 0 1.15rem;
+}
+#packaging .package-heading h3 {
+  flex-shrink: 0;
+  margin: 0;
+  font: 500 clamp(1.6rem, 3.1vw, 2.6rem)/1.2 "Nanum Myeongjo", "AppleMyungjo", Batang, serif;
+  letter-spacing: -.055em;
+}
+#packaging .package-heading p,
+#packaging figcaption p {
+  margin: 0;
+  color: #575045;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+#packaging .package-heading p { max-width: 28rem; }
+#packaging .package-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.4rem, 3.6vw, 3rem) clamp(1rem, 2.2vw, 2rem);
+}
+#packaging figure { min-width: 0; margin: 0; }
+:is(.package-photo, .concept-photo) {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #211f1a;
+  color: white;
+  text-align: left;
+  cursor: zoom-in;
+}
+:is(.package-photo, .concept-photo) img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+}
+:is(.package-photo, .concept-photo) span {
+  position: absolute;
+  inset: auto .55rem .55rem auto;
+  padding: .23rem .48rem;
+  border: 1px solid #b59c75;
+  background: #201c16ed;
+  color: #ffefd5;
+  font: 500 .875rem/1.25 system-ui, sans-serif;
+}
+:is(.package-photo, .concept-photo):hover span,
+:is(.package-photo, .concept-photo):focus-visible span { background: #f0ddbc; color: #24190d; }
+#packaging figcaption h4 {
+  margin: .6rem 0 0;
+  font-size: 1.1rem;
+  line-height: 1.45;
+  letter-spacing: -.025em;
+}
+#packaging .package-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #bdb09b;
+}
+#packaging .package-detail .package-photo { background: #dfd7c8; }
+#packaging .package-detail figcaption h4 { margin-top: 0; }
+#packaging .package-detail p { margin-top: .35rem; }
+#image-lightbox.artwork-view .lightbox-content { width: 100%; padding: 3.75rem 1rem 1rem; }
+#image-lightbox.artwork-view #lightbox-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(75vh, calc(100dvh - 8rem));
+  margin-inline: auto;
+  border-radius: 0;
+}
+#image-lightbox.artwork-view .lightbox-close {
+  right: 1rem;
+  top: .5rem;
+  width: 44px;
+  height: 44px;
+  line-height: 1;
+  padding: 0;
+  background: #201c16;
+  color: #fff;
+}
+#image-lightbox.artwork-view #lightbox-caption {
+  max-width: 42rem;
+  margin: .65rem auto 0;
+  color: #f4ebdc;
+}
+@media (max-width: 62rem) {
+  #packaging .package-heading { display: block; }
+  #packaging .package-heading p { max-width: 40rem; margin-top: .5rem; }
+  #packaging .package-detail { display: block; }
+  #packaging .package-detail figcaption h4 { margin-top: .6rem; }
+}
+@media (max-width: 40rem) {
+  #packaging .package-gallery { grid-template-columns: 1fr; }
+  #packaging .package-detail { padding-top: .8rem; }
+}
+
+
+/* 온세미로 곡물·오크·테이스팅 화보 */
+#concept figure { margin: 0; min-width: 0; }
+.concept-lead {
+  display: grid;
+  grid-template-columns: minmax(14rem, .82fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: clamp(1.25rem, 4vw, 4rem);
+  background: #1d1b17;
+  color: #f2efe8;
+}
+.concept-intro { padding: clamp(1.3rem, 3vw, 3rem); }
+.concept-intro h3 { margin: 0; font: 500 clamp(1.8rem, 3.6vw, 3.5rem)/1.2 "AppleMyungjo", Batang, serif; letter-spacing: -.055em; }
+.concept-intro p { margin: 1.1rem 0 0; color: #d7cebf; max-width: 22rem; line-height: 1.65; font-size: 1rem; }
+#concept figcaption { margin: .55rem 0 0; font-size: 1.12rem; font-weight: 600; }
+#concept .concept-lead figcaption { padding: 0 .9rem .7rem; }
+.concept-pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 2vw, 2rem); margin-top: clamp(1.1rem, 2vw, 2rem); }
+@media (max-width: 46rem) {
+  .concept-lead, .concept-pair { grid-template-columns: 1fr; }
+  .concept-lead { gap: 0; }
+  .concept-intro p { margin-top: .65rem; }
+}

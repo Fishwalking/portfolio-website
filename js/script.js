@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function canScrollSection(direction) {
     const section = sections[currentIndex];
-    if (!section || !section.matches("#onsemiro, #project")) return false;
+    if (!section || !section.matches("#onsemiro, #project, #design")) return false;
     const { scrollTop, clientHeight, scrollHeight } = section;
     return direction > 0 ? scrollTop + clientHeight < scrollHeight - 1 : scrollTop > 1;
   }
@@ -383,31 +383,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    const narrow = matchMedia("(max-width: 768px)");
-    onsemiroSection.querySelectorAll(".photo-slider-container").forEach((slider) => {
-      const track = slider.querySelector(".photo-slider-track");
-      const previous = slider.querySelector(".photo-prev-btn");
-      const next = slider.querySelector(".photo-next-btn");
-      const slides = Array.from(track.children);
-      let first = 0;
-
-      function show(index) {
-        const visibleCount = narrow.matches ? 2 : 4;
-        const last = Math.max(0, slides.length - visibleCount);
-        first = Math.max(0, Math.min(last, index));
-        track.style.transform = `translateX(-${first * 100 / visibleCount}%)`;
-        previous.disabled = first === 0;
-        next.disabled = first === last;
-        slides.forEach((slide, i) => {
-          slide.tabIndex = i >= first && i < first + visibleCount ? 0 : -1;
-        });
-      }
-      previous.addEventListener("click", () => show(first - 1));
-      next.addEventListener("click", () => show(first + 1));
-      narrow.addEventListener("change", () => show(first));
-      show(first);
-    });
-
     // --- '패키징' & '컨셉' 탭 이미지 확대 라이트박스 로직 ---
     const imageLightbox = document.getElementById("image-lightbox");
     const lightboxImg = document.getElementById("lightbox-img");
@@ -417,12 +392,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (imageLightbox && lightboxImg && lightboxCaption) {
       const imagesToZoom = onsemiroSection.querySelectorAll(
-        "#packaging .photo-item, #concept .photo-item"
+        ".package-photo, .concept-photo"
       );
 
       let opener;
       const openLightbox = (imgElement) => {
         opener = imgElement.closest("button");
+        imageLightbox.classList.add("artwork-view");
         lightboxImg.src = imgElement.src;
         lightboxImg.alt = imgElement.alt;
         lightboxCaption.textContent = imgElement.alt;
@@ -440,6 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const closeLightbox = () => {
         imageLightbox.style.display = "none";
+        imageLightbox.classList.remove("artwork-view");
         opener?.focus({ preventScroll: true });
       };
       closeImageLightboxBtn?.addEventListener("click", closeLightbox);

@@ -1,13 +1,25 @@
-#project {
+#project, #design {
+  --work-gap: clamp(.8rem, 1.5vw, 1.3rem);
+  --work-columns: 3;
   display: block;
   overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
   padding: 0;
   text-align: left;
-  background: #111110;
 }
-.project-content {
+#project { background: #111110; }
+
+.work-content {
   display: grid;
-  align-content: center;
+  grid-template-columns: max-content minmax(0, 1fr) auto;
+  grid-template-rows: minmax(2.75rem, auto) auto;
+  grid-template-areas:
+    "title summary controls"
+    "gallery gallery gallery";
+  align-content: start;
+  align-items: center;
+  column-gap: var(--work-gap);
+  row-gap: clamp(1rem, 2vh, 1.6rem);
   min-height: 100%;
   max-width: 80rem;
   margin-inline: auto;
@@ -15,21 +27,67 @@
     clamp(1.2rem, 5vw, 4rem)
     calc(var(--site-footer-height, 3rem) + 1.8rem);
 }
-.project-content h2 {
-  margin: 0 0 clamp(1rem, 2vh, 1.6rem);
+.work-title {
+  grid-area: title;
+  margin: 0;
   color: #fff;
   font-size: clamp(2rem, 4vw, 3.4rem);
   letter-spacing: -.05em;
   line-height: 1.08;
 }
-.project-grid {
-  list-style: none;
-  padding: 0;
+.work-summary {
+  grid-area: summary;
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(.8rem, 1.5vw, 1.3rem);
+  color: #e6e3db;
+  font-size: 1rem;
+  line-height: 1.45;
 }
+.design-controls {
+  grid-area: controls;
+  display: flex;
+  gap: .5rem;
+}
+.design-controls button {
+  display: grid;
+  place-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid #867f73;
+  border-radius: 50%;
+  padding: 0 0 .12em;
+  background: #34332f;
+  color: white;
+  font: 1.8rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.design-controls button:hover { background: #23231f; }
+.design-controls button:focus-visible { outline: 3px solid #ffc300; outline-offset: 2px; }
+.project-grid, #design .design-slider-container {
+  grid-area: gallery;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.project-grid, #design .design-slide {
+  display: grid;
+  grid-template-columns: repeat(var(--work-columns), minmax(0, 1fr));
+  gap: var(--work-gap);
+}
+.project-grid { list-style: none; }
+#design .design-slide {
+  align-content: start;
+  grid-template-rows: none;
+  padding: 0;
+}
+#design .design-item {
+  border: 1px solid #666258;
+  border-radius: .75rem;
+  background: #302f2b;
+}
+#design .design-item img { display: block; object-fit: contain; }
+#design .design-item:hover { transform: none; }
 .project-card {
   display: block;
   height: 100%;
@@ -86,5 +144,22 @@
 .project-screen { aspect-ratio: 16 / 9; background: black; }
 .project-screen iframe { display: block; width: 100%; height: 100%; border: 0; }
 .project-original { display: inline-block; padding: .75rem 1rem; color: #e7c866; text-decoration: underline; text-underline-offset: .22rem; }
-@media (max-width: 62rem) { .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 36rem) { .project-grid { grid-template-columns: 1fr; } }
+@media (max-width: 62rem) {
+  #project, #design { --work-columns: 2; }
+}
+@media (max-width: 44rem) {
+  .work-content {
+    grid-template-areas:
+      "title . controls"
+      "gallery gallery gallery";
+  }
+  #design .work-content {
+    grid-template-areas:
+      "title . controls"
+      "gallery gallery gallery"
+      "summary summary summary";
+  }
+}
+@media (max-width: 36rem) {
+  #project, #design { --work-columns: 1; }
+}
