@@ -41,5 +41,7 @@ if (designViewer && typeof designViewer.showModal === "function") {
     if (event.clientX < box.left || event.clientX > box.right ||
         event.clientY < box.top || event.clientY > box.bottom) designViewer.close();
   });
-  designViewer.addEventListener("close", () => image.removeAttribute("src"));
+  designViewer.addEventListener("close", () => {
+    if (!designViewer.open) image.removeAttribute("src");
+  });
 }
